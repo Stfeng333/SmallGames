@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>World Explorer - Globe-Trotter Trivia Cross</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Kalam:wght@400;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+  <style>
+    * {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0f172a;
+      overflow-x: hidden;
+    }
+    .font-heading { font-family: 'Fredoka', cursive; }
+    .font-handwriting { font-family: 'Kalam', cursive; }
+
+    /* World Map Flight Line Animation */
+    @keyframes dash {
+      to { stroke-dashoffset: -40; }
+    }
+    .animate-flight {
+      stroke-dasharray: 8, 8;
+      animation: dash 3s linear infinite;
+    }
+
+    /* Shining Audio Button Active Indicator */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.8), inset 0 0 8px rgba(253, 224, 71, 0.6); }
+      50% { box-shadow: 0 0 25px rgba(245, 158, 11, 1), inset 0 0 12px rgba(253, 224, 71, 0.9); }
+    }
+    .sound-active-shine {
+      animation: pulse-glow 2s infinite ease-in-out;
+      border-color: #f59e0b !important;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(14, 116, 144, 0.35)) !important;
+      color: #fef08a !important;
+    }
+
+    /* Crossword Cell Styling */
+    .cross-cell {
+      position: relative;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border-radius: 8px;
+      transition: all 0.15s ease-out;
+      cursor: pointer;
+    }
+
+    .cross-cell.active-input {
+      background: #f59e0b !important;
+      color: #0f172a !important;
+      transform: scale(1.08);
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.9);
+      z-index: 20;
+    }
+
+    .cross-cell.highlighted-word {
+      background: #38bdf8 !important;
+      color: #0f172a !important;
+    }
+
+    .cross-cell.solved {
+      background: #10b981 !important;
+      color: #ffffff !important;
+      border-color: #34d399 !important;
+      animation: pop-solve 0.35s ease-out;
+    }
+
+    @keyframes pop-solve {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* Custom Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); border-radius: 8px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 8px; }
+
+    /* Hidden Native Proxy Input */
+    #nativeInput {
+      position: absolute;
+      opacity: 0;
+      top: -1000px;
+      left: -1000px;
+      width: 1px;
+      height: 1px;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-screen flex flex-col justify-between relative overflow-hidden bg-slate-950 text-slate-100">
+
+  <!-- ==================== WORLD TRAVEL BACKDROP ==================== -->
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+    <!-- Sky & Globe Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#09152b] via-[#112447] via-60% to-[#1e130c]"></div>
+
+    <!-- Animated Flight Lines -->
+    <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <path d="M 100,400 Q 300,100 600,350 T 1100,200" fill="none" stroke="#f59e0b" stroke-width="2" class="animate-flight" />
+      <path d="M 200,600 Q 500,200 900,500 T 1150,300" fill="none" stroke="#38bdf8" stroke-width="1.5" class="animate-flight" style="animation-duration: 4s;" />
+    </svg>
+
+    <!-- HIGH-FIDELITY STATIC JETLINER 1 (Top Left Sky) -->
+    <div class="absolute top-[8%] left-[6%] transform -rotate-12 opacity-80 drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+      <svg width="240" height="120" viewBox="0 0 300 150" fill="none">
+        <defs>
+          <linearGradient id="fuselageGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#e2e8f0"/>
+            <stop offset="85%" stop-color="#64748b"/>
+            <stop offset="100%" stop-color="#334155"/>
+          </linearGradient>
+          <linearGradient id="wingGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#cbd5e1"/>
+            <stop offset="50%" stop-color="#64748b"/>
+            <stop offset="100%" stop-color="#1e293b"/>
+          </linearGradient>
+          <linearGradient id="engineGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#38bdf8"/>
+            <stop offset="100%" stop-color="#0284c7"/>
+          </linearGradient>
+          <filter id="softGlow1" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+        <!-- Soft Vapor Contrail Tail -->
+        <path d="M -80,75 Q 10,74 80,73" stroke="rgba(255,255,255,0.35)" stroke-width="8" stroke-linecap="round" filter="url(#softGlow1)"/>
+        <path d="M -40,78 Q 20,77 75,76" stroke="rgba(56,189,248,0.25)" stroke-width="4" filter="url(#softGlow1)"/>
+        
+        <!-- Left Wing (Underneath Shadowed) -->
+        <path d="M 115,75 L 180,125 L 205,115 L 155,75 Z" fill="#334155" stroke="#1e293b" stroke-width="1"/>
+        
+        <!-- Engine Under Left Wing -->
+        <rect x="145" y="90" width="30" height="12" rx="4" fill="#475569" stroke="#0f172a"/>
+        <ellipse cx="145" cy="96" rx="3" ry="5" fill="url(#engineGlow)"/>
+
+        <!-- Main Fuselage -->
+        <path d="M 50,75 C 50,55 120,58 240,70 C 275,74 285,75 270,78 C 210,87 110,88 50,75 Z" fill="url(#fuselageGrad1)" stroke="#475569" stroke-width="1"/>
+        
+        <!-- Passenger Cabin Windows -->
+        <g fill="#0f172a" opacity="0.85">
+          <circle cx="100" cy="71" r="2"/>
+          <circle cx="112" cy="71.5" r="2"/>
+          <circle cx="124" cy="72" r="2"/>
+          <circle cx="136" cy="72.5" r="2"/>
+          <circle cx="148" cy="73" r="2"/>
+          <circle cx="160" cy="73.5" r="2"/>
+          <circle cx="172" cy="74" r="2"/>
+          <circle cx="184" cy="74.5" r="2"/>
+          <circle cx="196" cy="75" r="2"/>
+          <circle cx="208" cy="75.5" r="2"/>
+          <circle cx="220" cy="76" r="2"/>
+        </g>
+
+        <!-- Cockpit Glass Windshield -->
+        <path d="M 242,71 Q 252,72 258,74 Q 250,76 242,74 Z" fill="#0284c7"/>
+
+        <!-- Tail Fin Vertical Stabilizer -->
+        <path d="M 65,72 L 35,28 L 60,33 L 88,71 Z" fill="url(#wingGrad1)" stroke="#1e293b" stroke-width="1"/>
+        <path d="M 37,29 L 33,20 L 42,22 L 45,30 Z" fill="#f59e0b"/> <!-- Gold Accent Tail Tip -->
+
+        <!-- Right Main Wing (Toplit) -->
+        <path d="M 125,73 L 195,20 L 218,28 L 165,73 Z" fill="url(#wingGrad1)" stroke="#1e293b" stroke-width="1"/>
+        <!-- Winglet -->
+        <path d="M 195,20 L 202,8 L 210,12 L 202,23 Z" fill="#f59e0b"/>
+
+        <!-- Engine Under Right Wing -->
+        <rect x="155" y="42" width="32" height="13" rx="4" fill="#64748b" stroke="#1e293b"/>
+        <ellipse cx="155" cy="48.5" rx="3.5" ry="5.5" fill="url(#engineGlow)"/>
+      </svg>
+    </div>
+
+    <!-- HIGH-FIDELITY STATIC JETLINER 2 (Right Horizon Facing Inward) -->
+    <div class="absolute top-[22%] right-[5%] transform rotate-6 opacity-75 drop-shadow-[0_12px_20px_rgba(0,0,0,0.5)]">
+      <svg width="200" height="100" viewBox="0 0 300 150" fill="none">
+        <!-- Vapor Trail -->
+        <path d="M 380,75 Q 300,76 220,77" stroke="rgba(255,255,255,0.25)" stroke-width="7" stroke-linecap="round" filter="url(#softGlow1)"/>
+        
+        <!-- Flipped Jet Hull facing Left -->
+        <g transform="translate(300, 0) scale(-1, 1)">
+          <path d="M 115,75 L 180,125 L 205,115 L 155,75 Z" fill="#1e293b"/>
+          <path d="M 50,75 C 50,55 120,58 240,70 C 275,74 285,75 270,78 C 210,87 110,88 50,75 Z" fill="url(#fuselageGrad1)" stroke="#334155"/>
+          <path d="M 242,71 Q 252,72 258,74 Q 250,76 242,74 Z" fill="#38bdf8"/>
+          <path d="M 65,72 L 35,28 L 60,33 L 88,71 Z" fill="url(#wingGrad1)"/>
+          <path d="M 125,73 L 195,20 L 218,28 L 165,73 Z" fill="url(#wingGrad1)"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Compass Rose Watermark -->
+    <g transform="translate(1000, 180) scale(0.8)" stroke="#f59e0b" stroke-width="1" fill="none" opacity="0.2">
+      <circle cx="0" cy="0" r="80" />
+      <circle cx="0" cy="0" r="70" stroke-dasharray="4,4" />
+      <path d="M 0,-90 L 15,-20 L 90,0 L 20,15 L 0,90 L -15,20 L -90,0 L -20,-15 Z" fill="#f59e0b" opacity="0.2" />
+    </g>
+
+    <!-- Silhouetted World Landmarks Footer Band -->
+    <div class="absolute bottom-0 left-0 w-full h-28 opacity-20 text-amber-200 fill-current flex justify-between items-end px-4">
+      <svg class="w-full h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <path d="M0,100 L30,40 L60,100 L120,100 L135,10 L150,100 L220,100 C240,60 280,60 300,100 L400,100 L410,20 L420,100 L500,100 L520,30 L540,100 L650,100 Q700,50 750,100 L880,100 L900,15 L920,100 L1000,100 Z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hidden Native Keyboard Input Proxy -->
+  <input type="text" id="nativeInput" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+
+  <!-- ==================== HEADER BAR ==================== -->
+  <header class="relative z-30 w-full max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-sky-500 flex items-center justify-center shadow-lg border border-amber-200/40">
+        <i class="fa-solid fa-plane-departure text-slate-950 text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-heading font-extrabold text-amber-300 tracking-wide drop-shadow-md">
+          WORLD EXPLORER
+        </h1>
+        <p class="text-[11px] text-sky-200/80 font-bold uppercase tracking-widest">Globe-Trotter Trivia Cross</p>
+      </div>
+    </div>
+
+    <!-- Score & Action Controls with Glowing Audio Toggle -->
+    <div class="flex items-center gap-2 sm:gap-4">
+      <div class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-amber-400/40 backdrop-blur-md text-center shadow-md">
+        <div class="text-[9px] text-amber-300/80 font-bold uppercase">Score</div>
+        <div id="score-display" class="text-sm sm:text-base font-extrabold text-amber-400">0 PTS</div>
+      </div>
+
+      <!-- SHINING AUDIO BUTTON -->
+      <button id="sound-btn" onclick="toggleAudio()" class="px-3 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg">
+        <i id="sound-icon" class="fa-solid fa-volume-high text-amber-300"></i>
+        <span class="hidden sm:inline">Sound</span>
+      </button>
+
+      <button onclick="regenerateGame()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-600 hover:to-sky-600 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl transition transform active:scale-95 flex items-center gap-2">
+        <i class="fa-solid fa-compass"></i> <span>New Flight</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== PARTY RULE BANNER ==================== -->
+  <div class="relative z-30 w-full max-w-7xl mx-auto px-4 py-1.5">
+    <div class="w-full bg-gradient-to-r from-amber-950/90 via-sky-950/90 to-amber-950/90 border border-amber-500/40 rounded-xl px-4 py-1.5 flex items-center justify-between shadow-lg text-xs font-bold text-amber-200">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-passport text-amber-400"></i>
+        <span>WORLD TRAVEL RULE: <span class="text-sky-300">1 SHOT FOR EVERY MINUTE YOU TAKE TO REACH 4000 PTS!</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-amber-300">
+        <i class="fa-solid fa-clock text-amber-400"></i>
+        <span id="game-timer">TIME: 00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="relative z-20 w-full max-w-7xl mx-auto flex-1 px-2 sm:px-4 py-2 flex flex-col lg:flex-row items-center justify-center gap-4 overflow-hidden">
+
+    <!-- LEFT: CROSSWORD MATRIX GRID BOARD & LEFT CONTROL PANEL -->
+    <div class="w-full lg:w-3/5 h-full max-h-[580px] bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-3 sm:p-5 flex flex-col justify-between shadow-2xl relative">
+      
+      <!-- Board Header & Left-Side Control Panel -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-map text-amber-400"></i>
+          <span class="text-xs sm:text-sm font-extrabold text-amber-100 uppercase tracking-wider">EXPEDITION MATRIX</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="useHint()" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1">
+            <i class="fa-solid fa-lightbulb text-amber-400"></i>
+            <span>Hint (-50)</span>
+          </button>
+          <button onclick="autoSolveWord()" class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/50 text-sky-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1">
+            <i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
+            <span>Auto Solve</span>
+          </button>
+          <div class="text-xs text-sky-300 font-bold ml-2">
+            Solved: <span id="solved-count">0</span>/<span id="total-words">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Crossword Grid Wrapper -->
+      <div class="flex-1 flex items-center justify-center my-auto overflow-hidden p-1 relative">
+        
+        <!-- Round Completion Toast Notification Overlay -->
+        <div id="round-complete-toast" class="absolute z-30 bg-gradient-to-r from-emerald-600 to-teal-600 border-2 border-amber-300 text-white font-extrabold px-6 py-3 rounded-2xl shadow-2xl transition-all transform scale-0 opacity-0 pointer-events-none flex items-center gap-3">
+          <i class="fa-solid fa-circle-check text-2xl text-amber-300"></i>
+          <div>
+            <div class="text-sm">ROUND COMPLETE!</div>
+            <div class="text-[10px] text-emerald-100 uppercase tracking-wider">Loading Next Destination...</div>
+          </div>
+        </div>
+
+        <div id="crossword-grid" class="grid gap-1 sm:gap-1.5 w-full h-full max-w-[440px] max-h-[440px] aspect-square mx-auto my-auto">
+          <!-- Grid cells dynamically generated by JS -->
+        </div>
+      </div>
+
+      <!-- Current Selected Clue Banner -->
+      <div class="mt-2 bg-slate-950/90 border border-amber-500/40 rounded-xl p-2.5 text-center min-h-[44px] flex items-center justify-center">
+        <p id="active-clue-banner" class="text-xs sm:text-sm font-bold text-amber-300">
+          ✈️ Tap any grid letter space to select a word clue!
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT: TRIVIA CLUES & SHOT COUNTER PANEL -->
+    <div class="w-full lg:w-2/5 flex flex-col gap-3 h-full max-h-[580px]">
+      
+      <!-- Trivia Clues Scroll Container -->
+      <div class="flex-1 bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-4 flex flex-col justify-between shadow-2xl overflow-hidden">
+        <h3 class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-2 border-b border-slate-800 pb-2">
+          <i class="fa-solid fa-earth-americas text-sky-400"></i> TRAVEL TRIVIA CLUES
+        </h3>
+
+        <div class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scroll" id="clues-container">
+          <!-- Across Clues -->
+          <div>
+            <h4 class="text-[11px] font-extrabold text-sky-400 uppercase tracking-widest mb-1.5">Across</h4>
+            <div id="across-clues" class="space-y-1.5"></div>
+          </div>
+          <!-- Down Clues -->
+          <div class="mt-3">
+            <h4 class="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest mb-1.5">Down</h4>
+            <div id="down-clues" class="space-y-1.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time-Based Party Shot Counter Box -->
+      <div class="bg-gradient-to-r from-amber-950/90 to-slate-900/90 border border-amber-500/40 rounded-2xl p-3.5 flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-lg">
+            <i class="fa-solid fa-glass-water"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-amber-200">TIME SHOT COUNTER</div>
+            <div class="text-[10px] text-slate-400">1 Shot added every minute while reaching 4000 pts!</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div id="shot-counter" class="text-2xl font-extrabold text-amber-400">0</div>
+          <div class="text-[9px] text-amber-300/70 font-bold uppercase">Shots Owed</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== DESK TRAVEL PROPS DECK ==================== -->
+  <div class="relative z-20 w-full max-w-7xl mx-auto px-4 py-2 flex items-center justify-around opacity-90 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md">
+    <div class="flex items-center gap-2 text-slate-400 hover:text-amber-300 transition cursor-pointer" onclick="playDeskSound()">
+      <i class="fa-solid fa-passport text-2xl text-blue-500"></i>
+      <span class="text-xs font-bold hidden sm:inline">Passport</span>
+    </div>
+
+    <div class="flex items-center gap-2 text-slate-400 hover:text-amber-300 transition cursor-pointer" onclick="playDeskSound()">
+      <i class="fa-solid fa-camera-retro text-2xl text-amber-600"></i>
+      <span class="text-xs font-bold hidden sm:inline">Camera</span>
+    </div>
+
+    <div class="flex items-center gap-2 text-slate-400 hover:text-amber-300 transition cursor-pointer" onclick="playDeskSound()">
+      <i class="fa-solid fa-compass text-2xl text-amber-400"></i>
+      <span class="text-xs font-bold hidden sm:inline">Compass</span>
+    </div>
+
+    <div class="flex items-center gap-2 text-slate-400 hover:text-amber-300 transition cursor-pointer" onclick="playDeskSound()">
+      <i class="fa-solid fa-martini-glass-citrus text-2xl text-sky-400"></i>
+      <span class="text-xs font-bold hidden sm:inline">Airport Lounge Drink</span>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="relative z-30 w-full bg-slate-950 border-t border-slate-800 text-center py-2 text-[11px] text-slate-500 font-semibold">
+    World Explorer Trivia Cross &copy; 2026 • Luxury Globe-Trotter Arcade
+  </footer>
+
+  <!-- ==================== 4000 POINTS REWARD VIDEO MODAL ==================== -->
+  <div id="reward-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border-2 border-amber-400 rounded-3xl p-5 sm:p-7 max-w-lg w-full text-center shadow-2xl relative">
+      <button onclick="closeRewardModal()" class="absolute top-3 right-4 text-slate-400 hover:text-white text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-400 to-sky-400 mx-auto flex items-center justify-center text-3xl text-slate-950 shadow-lg mb-3">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+
+      <h3 class="text-2xl font-heading font-extrabold text-amber-300">4000 POINTS MASTERED!</h3>
+      <p class="text-slate-300 text-xs sm:text-sm mt-1">You unlocked the Travel Champion Celebration Video!</p>
+
+      <div class="my-4 bg-slate-950 rounded-2xl overflow-hidden border border-amber-500/40 relative aspect-video flex items-center justify-center">
+        <video id="reward-video" class="w-full h-full object-cover" controls playsinline>
+          <source id="video-source" src="your-video-file.mp4" type="video/mp4">
+          Your browser does not support HTML5 video playback.
+        </video>
+      </div>
+
+      <button onclick="closeRewardModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 text-slate-950 font-extrabold text-sm shadow-lg">
+        Continue Expedition
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT GAME ENGINE ==================== -->
+  <script>
+    const WIN_THRESHOLD = 4000;
+
+    let audioEnabled = true;
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('sound-btn');
+      const icon = document.getElementById('sound-icon');
+      
+      if (audioEnabled) {
+        btn.className = 'px-3 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg';
+        icon.className = 'fa-solid fa-volume-high text-amber-300';
+      } else {
+        btn.className = 'px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-400 hover:bg-slate-800 text-xs font-bold transition flex items-center gap-2 shadow-xs';
+        icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+      }
+    }
+
+    function playTone(freq, type, duration) {
+      if (!audioEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playTypeSound() { playTone(600, 'sine', 0.05); }
+    function playSolveSound() {
+      playTone(523.25, 'triangle', 0.1);
+      setTimeout(() => playTone(659.25, 'triangle', 0.1), 80);
+      setTimeout(() => playTone(783.99, 'triangle', 0.2), 160);
+    }
+    function playRoundCompleteSound() {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((n, i) => setTimeout(() => playTone(n, 'triangle', 0.25), i * 110));
+    }
+    function playDeskSound() { playTone(350, 'sine', 0.08); }
+    function playHintSound() { playTone(440, 'triangle', 0.12); }
+
+    // 50+ EXTENSIVE WORLD TRAVEL WORD BANK
+    const MASTER_WORD_BANK = [
+      { word: 'PARIS', clue: 'City of Light & Eiffel Tower capital' },
+      { word: 'TOKYO', clue: 'Bustling capital of Japan with neon streets' },
+      { word: 'ROME', clue: 'Home to the Ancient Colosseum & pasta' },
+      { word: 'EGYPT', clue: 'Land of the Great Pyramids & River Nile' },
+      { word: 'ALPS', clue: 'Famous snow-capped European mountain range' },
+      { word: 'PERU', clue: 'South American country home to Machu Picchu' },
+      { word: 'BALI', clue: 'Famous Indonesian tropical paradise island' },
+      { word: 'SAFARI', clue: 'African wildlife expedition adventure' },
+      { word: 'VENICE', clue: 'Italian city built on water canals' },
+      { word: 'HAWAII', clue: 'US island state famous for hula & surfing' },
+      { word: 'LONDON', clue: 'Capital with Big Ben & Red Double-deckers' },
+      { word: 'BEACH', clue: 'Sandy shore by the ocean wave' },
+      { word: 'BERLIN', clue: 'Capital of Germany known for history & art' },
+      { word: 'SYDNEY', clue: 'Australian city with iconic Opera House' },
+      { word: 'GREECE', clue: 'Mediterranean country of ancient temples' },
+      { word: 'TAJMAHAL', clue: 'Marble mausoleum wonder in India' },
+      { word: 'MEXICO', clue: 'Land of ancient Mayan ruins & tacos' },
+      { word: 'DUBAI', clue: 'Desert metropolis of soaring skyscrapers' },
+      { word: 'BRAZIL', clue: 'Home to Amazon rainforest & Carnival' },
+      { word: 'NORWAY', clue: 'Scandinavian land of majestic fjords' },
+      { word: 'ICELAND', clue: 'Island of volcanoes, glaciers & hot springs' },
+      { word: 'KYOTO', clue: 'Historic Japanese city of serene temples' },
+      { word: 'MADRID', clue: 'Vibrant capital of Spain' },
+      { word: 'CANADIAN', clue: 'Relating to the vast snowy northern nation' },
+      { word: 'PRAGUE', clue: 'Czech city of a hundred spires' },
+      { word: 'VIENNA', clue: 'Austrian capital of classical music' },
+      { word: 'DUBLIN', clue: 'Irish capital famous for pubs & green hills' },
+      { word: 'AMSTERDAM', clue: 'Dutch capital of canals & bicycles' },
+      { word: 'BANGKOK', clue: 'Capital of Thailand with grand palaces' },
+      { word: 'SINGAPORE', clue: 'Futuristic Asian garden city-state' },
+      { word: 'MALDIVES', clue: 'Tropical nation of overwater bungalows' },
+      { word: 'TAIPEI', clue: 'Taiwanese capital famous for night markets' },
+      { word: 'SEOUL', clue: 'Dynamic South Korean capital of K-culture' },
+      { word: 'CUSCO', clue: 'Historic Inca Empire capital in Peru' },
+      { word: 'LISBON', clue: 'Coastal capital of Portugal on seven hills' },
+      { word: 'HAVANA', clue: 'Classic Cuban city of vintage cars' },
+      { word: 'ISTANBUL', clue: 'Turkish city straddling Europe and Asia' },
+      { word: 'MOROCCO', clue: 'North African kingdom of colorful souks' },
+      { word: 'ZANZIBAR', clue: 'Tanzanian spice island in the Indian Ocean' },
+      { word: 'PATAGONIA', clue: 'Wild southern region of Chile & Argentina' },
+      { word: 'KENYA', clue: 'East African nation famous for Great Migration' },
+      { word: 'FIJI', clue: 'Pacific island nation of coral reefs' },
+      { word: 'SAHARA', clue: 'Vast hot desert covering North Africa' },
+      { word: 'BOGOTA', clue: 'High-altitude capital of Colombia' },
+      { word: 'TORONTO', clue: 'Canada’s largest multicultural metropolis' },
+      { word: 'VANCOUVER', clue: 'Pacific coastal city surrounded by mountains' },
+      { word: 'CHICAGO', clue: 'American windy city famous for deep dish' },
+      { word: 'MIAMI', clue: 'Florida beach city of neon & Latin beats' },
+      { word: 'AMAZON', clue: 'World’s largest tropical rainforest' },
+      { word: 'EVEREST', clue: 'Tallest mountain peak on Earth' }
+    ];
+
+    let usedWordsHistory = new Set();
+
+    const GRID_SIZE = 9;
+    let gridMatrix = [];
+    let placedWords = [];
+    let selectedWordIndex = null;
+    let selectedCellPos = null;
+    let totalScore = 0;
+    let isTransitioningRound = false;
+
+    let secondsElapsed = 0;
+    let timerInterval = null;
+
+    const proxyInput = document.getElementById('nativeInput');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupInputProxy();
+      startSessionTimer();
+      regenerateGame();
+    });
+
+    function startSessionTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(secondsElapsed / 60);
+      const secs = secondsElapsed % 60;
+      const formatted = `TIME: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      document.getElementById('game-timer').innerText = formatted;
+      document.getElementById('shot-counter').innerText = mins;
+    }
+
+    function regenerateGame() {
+      isTransitioningRound = false;
+      let attempts = 0;
+      let success = false;
+
+      while (!success && attempts < 150) {
+        attempts++;
+        gridMatrix = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
+        placedWords = [];
+
+        let availablePool = MASTER_WORD_BANK.filter(w => !usedWordsHistory.has(w.word));
+        if (availablePool.length < 10) {
+          usedWordsHistory.clear();
+          availablePool = [...MASTER_WORD_BANK];
+        }
+
+        const pool = [...availablePool].sort(() => 0.5 - Math.random());
+        const first = pool[0];
+        const startR = 4;
+        const startC = Math.max(0, Math.floor((GRID_SIZE - first.word.length) / 2));
+        
+        if (canPlace(first.word, startR, startC, 'across')) {
+          doPlace(first, startR, startC, 'across', 1);
+        }
+
+        for (let i = 1; i < pool.length; i++) {
+          const item = pool[i];
+          let wordPlaced = false;
+
+          for (let r = 0; r < GRID_SIZE && !wordPlaced; r++) {
+            for (let c = 0; c < GRID_SIZE && !wordPlaced; c++) {
+              ['across', 'down'].forEach(dir => {
+                if (!wordPlaced && canPlace(item.word, r, c, dir)) {
+                  if (hasIntersection(item.word, r, c, dir)) {
+                    doPlace(item, r, c, dir, placedWords.length + 1);
+                    wordPlaced = true;
+                  }
+                }
+              });
+            }
+          }
+        }
+
+        if (placedWords.length >= 5) {
+          success = true;
+          placedWords.forEach(w => usedWordsHistory.add(w.word));
+        }
+      }
+
+      renderBoard();
+      renderClues();
+      updateHeader();
+    }
+
+    function canPlace(word, r, c, dir) {
+      if (dir === 'across') {
+        if (c + word.length > GRID_SIZE) return false;
+        for (let i = 0; i < word.length; i++) {
+          const cell = gridMatrix[r][c + i];
+          if (cell && cell.char !== word[i]) return false;
+        }
+      } else {
+        if (r + word.length > GRID_SIZE) return false;
+        for (let i = 0; i < word.length; i++) {
+          const cell = gridMatrix[r + i][c];
+          if (cell && cell.char !== word[i]) return false;
+        }
+      }
+      return true;
+    }
+
+    function hasIntersection(word, r, c, dir) {
+      let intersects = false;
+      for (let i = 0; i < word.length; i++) {
+        const nr = dir === 'across' ? r : r + i;
+        const nc = dir === 'across' ? c + i : c;
+        if (gridMatrix[nr][nc] !== null) intersects = true;
+      }
+      return intersects;
+    }
+
+    function doPlace(item, r, c, dir, num) {
+      const cells = [];
+      for (let i = 0; i < item.word.length; i++) {
+        const nr = dir === 'across' ? r : r + i;
+        const nc = dir === 'across' ? c + i : c;
+
+        if (!gridMatrix[nr][nc]) {
+          gridMatrix[nr][nc] = {
+            char: item.word[i],
+            userInput: '',
+            num: i === 0 ? num : null,
+            words: []
+          };
+        } else if (i === 0 && !gridMatrix[nr][nc].num) {
+          gridMatrix[nr][nc].num = num;
+        }
+
+        cells.push({ r: nr, c: nc });
+      }
+
+      const wordObj = {
+        id: placedWords.length,
+        num: num,
+        word: item.word,
+        clue: item.clue,
+        dir: dir,
+        cells: cells,
+        solved: false
+      };
+
+      cells.forEach(pos => {
+        gridMatrix[pos.r][pos.c].words.push(wordObj.id);
+      });
+
+      placedWords.push(wordObj);
+    }
+
+    function renderBoard() {
+      const container = document.getElementById('crossword-grid');
+      container.style.gridTemplateColumns = `repeat(${GRID_SIZE}, minmax(0, 1fr))`;
+      container.innerHTML = '';
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          const cellData = gridMatrix[r][c];
+          const cell = document.createElement('div');
+          cell.className = 'cross-cell select-none';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+
+          if (cellData) {
+            cell.classList.add('bg-slate-800/90', 'border', 'border-slate-700', 'text-amber-200', 'text-base', 'sm:text-lg');
+            
+            if (cellData.num) {
+              const numSpan = document.createElement('span');
+              numSpan.className = 'absolute top-0.5 left-1 text-[9px] font-bold text-amber-400/90 pointer-events-none';
+              numSpan.innerText = cellData.num;
+              cell.appendChild(numSpan);
+            }
+
+            const charSpan = document.createElement('span');
+            charSpan.className = 'cell-char';
+            charSpan.innerText = cellData.userInput;
+            cell.appendChild(charSpan);
+
+            cell.addEventListener('click', () => handleCellClick(r, c));
+          } else {
+            cell.classList.add('bg-slate-950/40', 'border', 'border-slate-900/40', 'pointer-events-none');
+          }
+
+          container.appendChild(cell);
+        }
+      }
+    }
+
+    function renderClues() {
+      const acrossBox = document.getElementById('across-clues');
+      const downBox = document.getElementById('down-clues');
+      acrossBox.innerHTML = '';
+      downBox.innerHTML = '';
+
+      placedWords.forEach((w) => {
+        const card = document.createElement('div');
+        card.id = `clue-card-${w.id}`;
+        card.className = `p-2 rounded-xl border text-xs cursor-pointer transition ${
+          w.solved 
+            ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 line-through' 
+            : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-amber-400/50'
+        }`;
+        card.innerHTML = `<span class="font-extrabold text-amber-400">${w.num}.</span> ${w.clue}`;
+        card.addEventListener('click', () => selectWord(w.id));
+
+        if (w.dir === 'across') acrossBox.appendChild(card);
+        else downBox.appendChild(card);
+      });
+    }
+
+    function setupInputProxy() {
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('#crossword-grid') || e.target.closest('#clues-container')) {
+          proxyInput.focus();
+        }
+      });
+
+      proxyInput.addEventListener('input', (e) => {
+        if (isTransitioningRound) return;
+        const char = e.target.value.slice(-1).toUpperCase();
+        proxyInput.value = '';
+
+        if (char && /[A-Z]/.test(char) && selectedCellPos) {
+          const { r, c } = selectedCellPos;
+          const cellData = gridMatrix[r][c];
+          
+          if (cellData) {
+            cellData.userInput = char;
+            playTypeSound();
+            updateCellUI(r, c);
+            checkWordSolves();
+            autoAdvance(r, c);
+          }
+        }
+      });
+
+      proxyInput.addEventListener('keydown', (e) => {
+        if (isTransitioningRound || !selectedCellPos) return;
+        const { r, c } = selectedCellPos;
+
+        if (e.key === 'Backspace') {
+          const cellData = gridMatrix[r][c];
+          if (cellData) {
+            cellData.userInput = '';
+            updateCellUI(r, c);
+            checkWordSolves();
+            autoRetreat(r, c);
+          }
+        }
+      });
+    }
+
+    function handleCellClick(r, c) {
+      if (isTransitioningRound) return;
+      const cellData = gridMatrix[r][c];
+      if (!cellData) return;
+
+      selectedCellPos = { r, c };
+
+      if (cellData.words.length > 0) {
+        if (selectedWordIndex === cellData.words[0] && cellData.words.length > 1) {
+          selectWord(cellData.words[1]);
+        } else {
+          selectWord(cellData.words[0]);
+        }
+      }
+      proxyInput.focus();
+    }
+
+    function selectWord(wordId) {
+      selectedWordIndex = wordId;
+      const wordObj = placedWords.find(w => w.id === wordId);
+      if (!wordObj) return;
+
+      document.getElementById('active-clue-banner').innerText = `✈️ (${wordObj.dir.toUpperCase()}) ${wordObj.num}. ${wordObj.clue}`;
+
+      document.querySelectorAll('.cross-cell').forEach(el => {
+        el.classList.remove('active-input', 'highlighted-word');
+      });
+
+      wordObj.cells.forEach(pos => {
+        const cellEl = getCellEl(pos.r, pos.c);
+        if (cellEl) cellEl.classList.add('highlighted-word');
+      });
+
+      if (!selectedCellPos || !wordObj.cells.some(p => p.r === selectedCellPos.r && p.c === selectedCellPos.c)) {
+        selectedCellPos = wordObj.cells[0];
+      }
+
+      const activeEl = getCellEl(selectedCellPos.r, selectedCellPos.c);
+      if (activeEl) activeEl.classList.add('active-input');
+
+      document.querySelectorAll('[id^="clue-card-"]').forEach(c => c.classList.remove('border-amber-400', 'bg-amber-950/40'));
+      const activeCard = document.getElementById(`clue-card-${wordId}`);
+      if (activeCard) activeCard.classList.add('border-amber-400', 'bg-amber-950/40');
+    }
+
+    function useHint() {
+      if (isTransitioningRound || selectedWordIndex === null) return;
+      const wordObj = placedWords.find(w => w.id === selectedWordIndex);
+      if (!wordObj || wordObj.solved) return;
+
+      const blanks = wordObj.cells.filter(p => gridMatrix[p.r][p.c].userInput !== gridMatrix[p.r][p.c].char);
+      if (blanks.length > 0) {
+        const randomPos = blanks[Math.floor(Math.random() * blanks.length)];
+        const cellData = gridMatrix[randomPos.r][randomPos.c];
+        cellData.userInput = cellData.char;
+        
+        totalScore = Math.max(0, totalScore - 50);
+        playHintSound();
+        updateCellUI(randomPos.r, randomPos.c);
+        checkWordSolves();
+        updateHeader();
+      }
+    }
+
+    function autoSolveWord() {
+      if (isTransitioningRound || selectedWordIndex === null) return;
+      const wordObj = placedWords.find(w => w.id === selectedWordIndex);
+      if (!wordObj || wordObj.solved) return;
+
+      wordObj.cells.forEach(p => {
+        gridMatrix[p.r][p.c].userInput = gridMatrix[p.r][p.c].char;
+        updateCellUI(p.r, p.c);
+      });
+
+      playSolveSound();
+      checkWordSolves();
+    }
+
+    function autoAdvance(r, c) {
+      if (selectedWordIndex === null) return;
+      const wordObj = placedWords.find(w => w.id === selectedWordIndex);
+      const currentIdx = wordObj.cells.findIndex(p => p.r === r && p.c === c);
+
+      if (currentIdx < wordObj.cells.length - 1) {
+        selectedCellPos = wordObj.cells[currentIdx + 1];
+        selectWord(selectedWordIndex);
+      }
+    }
+
+    function autoRetreat(r, c) {
+      if (selectedWordIndex === null) return;
+      const wordObj = placedWords.find(w => w.id === selectedWordIndex);
+      const currentIdx = wordObj.cells.findIndex(p => p.r === r && p.c === c);
+
+      if (currentIdx > 0) {
+        selectedCellPos = wordObj.cells[currentIdx - 1];
+        selectWord(selectedWordIndex);
+      }
+    }
+
+    function checkWordSolves() {
+      placedWords.forEach(w => {
+        const currentText = w.cells.map(p => gridMatrix[p.r][p.c].userInput).join('');
+        
+        if (currentText === w.word) {
+          if (!w.solved) {
+            w.solved = true;
+            totalScore += 200;
+            playSolveSound();
+
+            w.cells.forEach(p => {
+              gridMatrix[p.r][p.c].userInput = gridMatrix[p.r][p.c].char;
+              const cellEl = getCellEl(p.r, p.c);
+              if (cellEl) cellEl.classList.add('solved');
+            });
+
+            renderClues();
+            updateHeader();
+
+            if (totalScore >= WIN_THRESHOLD) {
+              triggerRewardModal();
+            }
+          }
+        } else {
+          if (w.solved) {
+            w.solved = false;
+            w.cells.forEach(p => {
+              const cellEl = getCellEl(p.r, p.c);
+              if (cellEl) cellEl.classList.remove('solved');
+            });
+            renderClues();
+            updateHeader();
+          }
+        }
+      });
+
+      const allSolved = placedWords.length > 0 && placedWords.every(w => w.solved);
+      if (allSolved && !isTransitioningRound) {
+        isTransitioningRound = true;
+        playRoundCompleteSound();
+        showRoundCompleteToast();
+
+        setTimeout(() => {
+          hideRoundCompleteToast();
+          regenerateGame();
+        }, 1200);
+      }
+    }
+
+    function showRoundCompleteToast() {
+      const toast = document.getElementById('round-complete-toast');
+      toast.classList.remove('scale-0', 'opacity-0');
+      toast.classList.add('scale-100', 'opacity-100');
+    }
+
+    function hideRoundCompleteToast() {
+      const toast = document.getElementById('round-complete-toast');
+      toast.classList.remove('scale-100', 'opacity-100');
+      toast.classList.add('scale-0', 'opacity-0');
+    }
+
+    function updateCellUI(r, c) {
+      const cellEl = getCellEl(r, c);
+      if (cellEl) {
+        const span = cellEl.querySelector('.cell-char');
+        if (span) span.innerText = gridMatrix[r][c].userInput;
+      }
+    }
+
+    function getCellEl(r, c) {
+      return document.querySelector(`.cross-cell[data-r="${r}"][data-c="${c}"]`);
+    }
+
+    function updateHeader() {
+      document.getElementById('score-display').innerText = `${totalScore} PTS`;
+      
+      const solvedCount = placedWords.filter(w => w.solved).length;
+      document.getElementById('solved-count').innerText = solvedCount;
+      document.getElementById('total-words').innerText = placedWords.length;
+    }
+
+    function triggerRewardModal() {
+      const modal = document.getElementById('reward-modal');
+      const video = document.getElementById('reward-video');
+      modal.classList.remove('hidden');
+      if (video) {
+        video.play().catch(e => console.log('Autoplay prevented:', e));
+      }
+    }
+
+    function closeRewardModal() {
+      document.getElementById('reward-modal').classList.add('hidden');
+      const video = document.getElementById('reward-video');
+      if (video) video.pause();
+    }
+  </script>
+</body>
+</html>
