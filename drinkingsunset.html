@@ -156,25 +156,13 @@
 				);
 				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
 			}
-
-			@keyframes toast-anim {
-				0% {
-					transform: scale(1);
-				}
-				50% {
-					transform: scale(1.15) rotate(-3deg);
-				}
-				100% {
-					transform: scale(1);
-				}
-			}
 		</style>
 	</head>
 
 	<body
 		class="w-full min-h-screen flex flex-col justify-between overflow-x-hidden relative"
 	>
-		<!-- BACKGROUND SUNSET ATMOSPHERE & OCEAN GLIMMER -->
+		<!-- BACKGROUND SUNSET ATMOSPHERE -->
 		<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
 			<div
 				class="absolute top-[50%] left-0 right-0 h-[24%] bg-gradient-to-b from-[#e05328] via-[#a84824]/60 to-transparent opacity-80"
@@ -184,7 +172,7 @@
 			></div>
 		</div>
 
-		<!-- HEADER / NAVIGATION BAR -->
+		<!-- HEADER BAR -->
 		<header
 			class="relative z-20 w-full px-4 sm:px-8 py-3 flex items-center justify-between bg-black/30 backdrop-blur-md border-b border-white/10"
 		>
@@ -242,33 +230,219 @@
 			</div>
 		</header>
 
-		<!-- MAIN GAME CANVAS CONTAINER (Expanded proportion & larger text) -->
+		<!-- MAIN GAME CANVAS CONTAINER WITH RESTORED SIDE COCKTAILS -->
 		<main
 			class="relative z-10 flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 py-4 flex items-center justify-center"
 		>
-			<div class="w-full flex items-center justify-center gap-4 my-auto">
-				<!-- CENTER NOTEBOOK PUZZLE CONTAINER (Larger Scale) -->
-				<div class="flex-1 max-w-3xl mx-auto flex flex-col items-center">
+			<div class="w-full flex items-end justify-between gap-2 lg:gap-6 my-auto">
+				<!-- LEFT SIDE BEACH PROPS: 3 COCKTAILS -->
+				<div
+					class="hidden md:flex flex-col items-center justify-end w-36 lg:w-48 space-y-3 pb-2 self-end"
+				>
+					<!-- Drink 1 -->
 					<div
-						class="notebook-wrapper relative w-full bg-[#f4ebd0] rounded-3xl p-4 sm:p-7 md:p-8 border-4 border-[#ab713e]/40 text-amber-950"
+						onclick="clinkDrink('Hurricane Cocktail')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Sunset Hurricane Cocktail"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 100 130"
+							>
+								<path
+									d="M 38 112 L 62 112 L 54 122 L 70 125 L 30 125 L 46 122 Z"
+									fill="#e2e8f0"
+									opacity="0.85"
+								/>
+								<rect
+									x="47"
+									y="92"
+									width="6"
+									height="20"
+									rx="2"
+									fill="#cbd5e1"
+									opacity="0.75"
+								/>
+								<path
+									d="M 25 25 Q 14 50 25 75 Q 35 95 50 95 Q 65 95 75 75 Q 86 50 75 25 Z"
+									fill="rgba(255,255,255,0.25)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2"
+								/>
+								<path
+									d="M 27 35 Q 20 52 27 73 Q 35 91 50 91 Q 65 91 73 73 Q 80 52 73 35 Z"
+									fill="url(#hurricaneGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="hurricaneGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#ef4444"
+										/>
+										<stop
+											offset="50%"
+											stop-color="#f97316"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#facc15"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Hurricane</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
+					</div>
+
+					<!-- Drink 2 -->
+					<div
+						onclick="clinkDrink('Piña Colada')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Piña Colada"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 100 120"
+							>
+								<path
+									d="M 38 100 L 62 100 L 54 112 L 68 115 L 32 115 L 46 112 Z"
+									fill="#e2e8f0"
+									opacity="0.8"
+								/>
+								<rect
+									x="47"
+									y="82"
+									width="6"
+									height="20"
+									rx="2"
+									fill="#cbd5e1"
+									opacity="0.75"
+								/>
+								<path
+									d="M 28 30 C 18 55 24 75 50 82 C 76 75 82 55 72 30 Z"
+									fill="rgba(255,255,255,0.25)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2"
+								/>
+								<path
+									d="M 30 38 C 21 58 26 73 50 80 C 74 73 79 58 70 38 Z"
+									fill="url(#pinaGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="pinaGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#fffbeb"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#fde047"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Piña Colada</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
+					</div>
+
+					<!-- Drink 3 -->
+					<div
+						onclick="clinkDrink('Blue Hawaiian')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Blue Hawaiian Cocktail"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 90 115"
+							>
+								<path
+									d="M 25 15 C 20 40 28 85 45 95 C 62 85 70 40 65 15 Z"
+									fill="rgba(255,255,255,0.2)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2"
+								/>
+								<path
+									d="M 32 95 L 58 95 L 56 108 L 68 110 L 22 110 L 34 108 Z"
+									fill="#cbd5e1"
+									opacity="0.8"
+								/>
+								<path
+									d="M 26 25 C 22 45 29 82 45 92 C 61 82 68 45 64 25 Z"
+									fill="url(#blueGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="blueGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#38bdf8"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#0369a1"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Blue Hawaiian</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
+					</div>
+				</div>
+
+				<!-- CENTER NOTEBOOK PUZZLE CONTAINER (Larger Scale) -->
+				<div class="flex-1 max-w-2xl mx-auto flex flex-col items-center">
+					<div
+						class="notebook-wrapper relative w-full bg-[#f4ebd0] rounded-3xl p-4 sm:p-6 border-4 border-[#ab713e]/40 text-amber-950"
 					>
 						<!-- Binder Rings -->
 						<div
-							class="absolute -left-4 top-8 bottom-8 flex flex-col justify-between z-20 pointer-events-none"
+							class="absolute -left-3 sm:-left-4 top-8 bottom-8 flex flex-col justify-between z-20 pointer-events-none"
 						>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
-							<div class="binder-ring w-6 h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
+							<div class="binder-ring w-5 h-3 sm:w-8 sm:h-4 rounded-full"></div>
 						</div>
 
 						<!-- Inner Page -->
 						<div
-							class="w-full bg-[#fffdf7] rounded-2xl p-4 sm:p-6 shadow-inner border border-amber-200/80 relative overflow-hidden"
+							class="w-full bg-[#fffdf7] rounded-2xl p-4 sm:p-5 shadow-inner border border-amber-200/80 relative overflow-hidden"
 						>
 							<div
 								class="absolute inset-0 opacity-25 pointer-events-none"
@@ -277,37 +451,37 @@
 										#8c5627 1.5px,
 										transparent 1.5px
 									);
-									background-size: 20px 20px;
+									background-size: 18px 18px;
 								"
 							></div>
 
 							<!-- Header Title -->
 							<div
-								class="relative z-10 flex items-center justify-between border-b-2 border-dashed border-amber-300/80 pb-3 mb-4"
+								class="relative z-10 flex items-center justify-between border-b-2 border-dashed border-amber-300/80 pb-2 mb-3"
 							>
-								<div class="flex items-center space-x-3">
+								<div class="flex items-center space-x-2">
 									<span
-										class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center font-bold text-xl"
+										class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center font-bold text-base"
 									>
 										<i class="fa-solid fa-compass"></i>
 									</span>
 									<div>
 										<h2
 											id="puzzle-title"
-											class="text-xl sm:text-3xl font-black text-amber-950 uppercase tracking-wider"
+											class="text-xl sm:text-2xl font-black text-amber-950 uppercase tracking-wider"
 										>
 											SUNSET SPELL
 										</h2>
 										<p
-											class="text-xs sm:text-sm font-bold text-amber-700/80 tracking-widest font-kalam"
+											class="text-[11px] font-bold text-amber-700/80 tracking-widest font-kalam"
 										>
 											✨ WORD SOUP PUZZLE ✨
 										</p>
 									</div>
 								</div>
-								<div class="text-right flex items-center gap-2">
+								<div class="text-right">
 									<div
-										class="text-sm sm:text-base font-black text-amber-900 bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-300/60 shadow-sm flex items-center gap-1.5"
+										class="text-xs sm:text-sm font-black text-amber-900 bg-amber-100 px-2.5 py-1 rounded-xl border border-amber-300/60 shadow-sm flex items-center gap-1"
 									>
 										<i class="fa-regular fa-clock text-amber-600"></i>
 										<span id="game-timer">00:00</span>
@@ -315,37 +489,190 @@
 								</div>
 							</div>
 
-							<!-- WORD SOUP MATRIX GRID (Larger letters: text-lg sm:text-2xl lg:text-3xl) -->
-							<div class="w-full max-w-[560px] mx-auto mb-4">
+							<!-- WORD SOUP MATRIX GRID (Larger letters) -->
+							<div class="w-full max-w-[480px] mx-auto mb-3">
 								<div
 									id="word-grid"
-									class="grid grid-cols-10 gap-1.5 sm:gap-2 p-2.5 bg-amber-100/60 rounded-2xl border-2 border-amber-300/70 shadow-sm touch-none"
+									class="grid grid-cols-10 gap-1.5 p-2 bg-amber-100/60 rounded-2xl border-2 border-amber-300/70 shadow-sm touch-none"
 								></div>
 							</div>
 
 							<!-- WORD LIST CONTAINER -->
 							<div
-								class="w-full bg-amber-50/90 rounded-xl p-3 sm:p-4 border border-amber-200/90"
+								class="w-full bg-amber-50/90 rounded-xl p-3 border border-amber-200/90"
 							>
-								<div class="flex items-center justify-between mb-2 px-1">
+								<div class="flex items-center justify-between mb-1.5 px-1">
 									<span
-										class="text-xs sm:text-base font-extrabold text-amber-900 uppercase tracking-wide flex items-center gap-2"
+										class="text-xs sm:text-sm font-extrabold text-amber-900 uppercase tracking-wide flex items-center gap-1.5"
 									>
 										<i class="fa-solid fa-magnifying-glass text-orange-500"></i>
 										FIND WORDS (<span id="found-count">0</span> /
 										<span id="total-count">8</span>)
 									</span>
-									<span class="text-xs font-bold text-amber-600 font-kalam"
+									<span class="text-[11px] font-bold text-amber-600 font-kalam"
 										>Drag or click letters</span
 									>
 								</div>
 
 								<div
 									id="word-list"
-									class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-36 overflow-y-auto custom-scroll pr-1"
+									class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 max-h-28 overflow-y-auto custom-scroll pr-1"
 								></div>
 							</div>
 						</div>
+					</div>
+				</div>
+
+				<!-- RIGHT SIDE BEACH PROPS: 3 COCKTAILS -->
+				<div
+					class="hidden md:flex flex-col items-center justify-end w-36 lg:w-48 space-y-3 pb-2 self-end"
+				>
+					<!-- Drink 4 -->
+					<div
+						onclick="clinkDrink('Tequila Sunrise')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Tequila Sunrise Cocktail"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 90 125"
+							>
+								<path
+									d="M 25 15 L 65 15 L 60 112 L 30 112 Z"
+									fill="rgba(255,255,255,0.2)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2.5"
+								/>
+								<path
+									d="M 26.5 24 L 63.5 24 L 59 106 L 31 106 Z"
+									fill="url(#sunriseGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="sunriseGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#facc15"
+										/>
+										<stop
+											offset="50%"
+											stop-color="#fb923c"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#9f1239"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Sunrise</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
+					</div>
+
+					<!-- Drink 5 -->
+					<div
+						onclick="clinkDrink('Classic Margarita')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Classic Margarita"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 110 115"
+							>
+								<path
+									d="M 15 28 C 15 52 40 60 48 85 L 62 85 C 70 60 95 52 95 28 Z"
+									fill="rgba(255,255,255,0.25)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2"
+								/>
+								<path
+									d="M 20 32 C 22 50 42 56 48 80 L 62 80 C 68 56 88 50 90 32 Z"
+									fill="url(#margaritaGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="margaritaGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#bef264"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#4d7c0f"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Margarita</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
+					</div>
+
+					<!-- Drink 6 -->
+					<div
+						onclick="clinkDrink('Beach Mojito')"
+						class="ground-prop flex flex-col items-center cursor-pointer group"
+						title="Tropical Beach Mojito"
+					>
+						<div class="relative w-20 h-24 flex items-center justify-center">
+							<svg
+								class="w-full h-full drop-shadow-md"
+								viewBox="0 0 85 115"
+							>
+								<path
+									d="M 20 15 L 65 15 L 58 105 L 27 105 Z"
+									fill="rgba(255,255,255,0.2)"
+									stroke="rgba(255,255,255,0.7)"
+									stroke-width="2.5"
+								/>
+								<path
+									d="M 21.5 22 L 63.5 22 L 58 98 L 27 98 Z"
+									fill="url(#mojitoGrad)"
+								/>
+								<defs>
+									<linearGradient
+										id="mojitoGrad"
+										x1="0"
+										y1="0"
+										x2="0"
+										y2="1"
+									>
+										<stop
+											offset="0%"
+											stop-color="#f7fee7"
+										/>
+										<stop
+											offset="100%"
+											stop-color="#84cc16"
+										/>
+									</linearGradient>
+								</defs>
+							</svg>
+						</div>
+						<span
+							class="text-amber-100 text-[10px] font-bold tracking-wider drop-shadow bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-500/20"
+							>Mojito</span
+						>
+						<div class="prop-shadow w-20 h-3 rounded-full mt-[-2px]"></div>
 					</div>
 				</div>
 			</div>
@@ -353,7 +680,7 @@
 
 		<!-- FOOTER -->
 		<footer
-			class="relative z-20 w-full py-2.5 text-center text-amber-200/60 text-xs font-semibold bg-black/30 backdrop-blur-sm border-t border-white/5"
+			class="relative z-20 w-full py-2 text-center text-amber-200/60 text-xs font-semibold bg-black/30 backdrop-blur-sm border-t border-white/5"
 		>
 			Sunset Spell Word Soup Deluxe © 2026 • Luxury Sunset Beach Deck Arcade
 		</footer>
@@ -361,12 +688,12 @@
 		<!-- SHOT TOAST -->
 		<div
 			id="shot-toast"
-			class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4"
+			class="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4"
 		>
 			<div
-				class="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white font-black text-base sm:text-xl px-6 py-3 rounded-2xl shadow-2xl border-2 border-amber-200 flex items-center gap-3"
+				class="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white font-black text-sm sm:text-lg px-6 py-2.5 rounded-2xl shadow-2xl border-2 border-amber-200 flex items-center gap-2"
 			>
-				<span class="text-3xl">🍹</span>
+				<span class="text-2xl">🍹</span>
 				<span>WORD FOUND = TIME FOR A SHOT! 🥂</span>
 			</div>
 		</div>
@@ -377,7 +704,7 @@
 			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300"
 		>
 			<div
-				class="bg-gradient-to-b from-amber-50 to-orange-100 rounded-3xl p-8 max-w-md w-full border-4 border-amber-400 shadow-2xl text-center transform scale-90 transition-transform duration-300"
+				class="bg-gradient-to-b from-amber-50 to-orange-100 rounded-3xl p-6 sm:p-8 max-w-md w-full border-4 border-amber-400 shadow-2xl text-center transform scale-90 transition-transform duration-300"
 			>
 				<div
 					class="w-20 h-20 mx-auto mb-3 rounded-full bg-amber-400/30 flex items-center justify-center text-amber-600 text-4xl animate-bounce"
@@ -389,11 +716,11 @@
 				>
 					VICTORY!
 				</h3>
-				<p class="text-amber-800 text-base font-bold mb-3 font-kalam">
+				<p class="text-amber-800 text-sm font-bold mb-3 font-kalam">
 					You completed the Sunset Word Soup!
 				</p>
 				<p
-					class="text-xs font-extrabold text-orange-600 uppercase mb-4 bg-orange-200/60 py-2 px-3 rounded-xl border border-orange-300"
+					class="text-xs font-extrabold text-orange-600 uppercase mb-4 bg-orange-200/60 py-1.5 px-3 rounded-xl border border-orange-300"
 				>
 					🍹 Total Party Shots Earned:
 					<span
@@ -431,7 +758,7 @@
 				<div class="flex flex-col gap-2.5">
 					<button
 						onclick="goToTravelGame()"
-						class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-extrabold text-base shadow-lg border border-amber-300 transition active:scale-95"
+						class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-extrabold text-base shadow-lg border border-amber-300 transition active:scale-95"
 					>
 						Next Game: World Explorer ✈️
 					</button>
@@ -440,7 +767,7 @@
 							closeVictoryModal();
 							generateNewPuzzle();
 						"
-						class="w-full py-3 rounded-2xl bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold text-sm transition"
+						class="w-full py-2.5 rounded-2xl bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold text-xs transition"
 					>
 						Play Another Puzzle 🔄
 					</button>
@@ -533,6 +860,13 @@
 						gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
 						osc.start(now);
 						osc.stop(now + 0.25);
+					} else if (type === 'clink') {
+						osc.type = 'triangle';
+						osc.frequency.setValueAtTime(1760, now);
+						gain.gain.setValueAtTime(0.2, now);
+						gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+						osc.start(now);
+						osc.stop(now + 0.2);
 					} else if (type === 'win') {
 						osc.type = 'sine';
 						osc.frequency.setValueAtTime(440, now);
@@ -542,6 +876,11 @@
 						osc.stop(now + 0.5);
 					}
 				} catch (e) {}
+			}
+
+			function clinkDrink(drinkName) {
+				playSound('clink');
+				showShotToast(`CHEERS! 🥂 (${drinkName})`);
 			}
 
 			function toggleAudio() {
@@ -645,7 +984,7 @@
 					for (let c = 0; c < GRID_SIZE; c++) {
 						const cell = document.createElement('div');
 						cell.className =
-							'word-cell flex items-center justify-center rounded-xl bg-amber-50/90 text-amber-950 font-black text-lg sm:text-2xl lg:text-3xl border border-amber-200/80 cursor-pointer shadow-sm select-none';
+							'word-cell flex items-center justify-center rounded-xl bg-amber-50/90 text-amber-950 font-black text-lg sm:text-2xl border border-amber-200/80 cursor-pointer shadow-sm select-none';
 						cell.dataset.row = r;
 						cell.dataset.col = c;
 						cell.textContent = grid[r][c];
@@ -676,8 +1015,8 @@
 				listEl.innerHTML = '';
 				currentPuzzleWords.forEach((word) => {
 					const card = document.createElement('div');
-					card.className = `flex items-center space-x-2 px-3 py-1.5 rounded-lg border text-xs sm:text-sm font-bold shadow-sm transition-all duration-300 ${foundWords.has(word) ? 'bg-emerald-100 border-emerald-300 text-emerald-800 line-through opacity-75' : 'bg-white/80 border-amber-200/80 text-amber-900'}`;
-					card.innerHTML = `<span class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${foundWords.has(word) ? 'bg-emerald-500 text-white' : 'bg-amber-200 text-amber-800'}"><i class="fa-solid ${foundWords.has(word) ? 'fa-check' : 'fa-sun'}"></i></span><span class="tracking-wider">${word}</span>`;
+					card.className = `flex items-center space-x-2 px-2.5 py-1 rounded-lg border text-xs sm:text-sm font-bold shadow-sm transition-all duration-300 ${foundWords.has(word) ? 'bg-emerald-100 border-emerald-300 text-emerald-800 line-through opacity-75' : 'bg-white/80 border-amber-200/80 text-amber-900'}`;
+					card.innerHTML = `<span class="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] ${foundWords.has(word) ? 'bg-emerald-500 text-white' : 'bg-amber-200 text-amber-800'}"><i class="fa-solid ${foundWords.has(word) ? 'fa-check' : 'fa-sun'}"></i></span><span class="tracking-wider">${word}</span>`;
 					listEl.appendChild(card);
 				});
 			}
@@ -766,8 +1105,10 @@
 				startCell = null;
 			}
 
-			function showShotToast() {
+			function showShotToast(customMessage = null) {
 				const toast = document.getElementById('shot-toast');
+				toast.querySelector('span:last-child').textContent =
+					customMessage || 'WORD FOUND = TIME FOR A SHOT! 🥂';
 				toast.classList.remove('opacity-0', '-translate-y-4');
 				toast.classList.add('opacity-100', 'translate-y-0');
 				setTimeout(() => {
@@ -819,6 +1160,12 @@
 					.getElementById('victory-modal')
 					.classList.remove('opacity-0', 'pointer-events-none');
 			}
+			function closeVictoryModal() {
+				document
+					.getElementById('victory-modal')
+					.classList.add('opacity-0', 'pointer-events-none');
+			}
+
 			window.onload = function () {
 				generateNewPuzzle();
 			};
