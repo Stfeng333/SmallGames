@@ -283,6 +283,7 @@
     .sudoku-board {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr); /* rows are exactly height/9 — content can never grow taller than the square */
       width: 100%;
       flex: 0 0 auto;
       aspect-ratio: 1 / 1;
@@ -297,11 +298,13 @@
     .sudoku-cell {
       width: 100%;
       height: 100%;
+      min-height: 0; /* cells can't inflate their grid track from content size */
       display: flex;
       justify-content: center;
       align-items: center;
       font-family: 'Fredoka', sans-serif;
       font-size: clamp(18px, 3vh, 30px);
+      line-height: 1; /* keeps the digit's line box inside the ~31px cell on phones */
       font-weight: 600;
       background-color: #ffffff;
       color: #2563eb;
