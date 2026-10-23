@@ -35,6 +35,10 @@
     }
 
     /* Wooden Desk Scene Container */
+    :root {
+      --wrapper-pad-y: 40px; /* page padding — reused as fit-safety slack */
+    }
+
     .desk-wrapper {
       width: 100%;
       min-height: 100vh;
@@ -46,7 +50,7 @@
       /* Vertical centering is handled by the notebook's auto margins, so content
          taller than the phone screen scrolls instead of being clipped on top. */
       align-items: flex-start;
-      padding: 40px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+      padding: var(--wrapper-pad-y) 16px calc(var(--wrapper-pad-y) + env(safe-area-inset-bottom, 0px));
       background:
         radial-gradient(circle at 50% 50%, rgba(255, 230, 190, 0.08) 0%, rgba(0, 0, 0, 0.7) 100%),
         repeating-linear-gradient(0deg, #3d2214 0px, #321a0e 24px, #271309 48px);
@@ -166,8 +170,8 @@
       margin: auto; /* collapses to 0 when space runs out — prevents the clipped-top flex bug */
       width: min(100%, 760px);
       min-height: 780px;
-      min-height: min(780px, calc(100vh - 88px));
-      min-height: min(780px, calc(100svh - 88px));
+      min-height: min(780px, calc(100vh - 2 * var(--wrapper-pad-y) - 8px));
+      min-height: min(780px, calc(100svh - 2 * var(--wrapper-pad-y) - env(safe-area-inset-bottom, 0px) - 8px));
       background-color: #fbf7ee;
       border-radius: 8px 24px 24px 8px;
       padding: clamp(24px, 3vh, 32px) clamp(20px, 3.5vw, 44px);
@@ -247,15 +251,40 @@
       text-transform: uppercase;
     }
 
-    /* Sudoku Board Grid */
+    /* Sudoku Board Grid — in a scrollable region so it is never clipped */
+    /* Scroll region: on small screens the grid scrolls INSIDE the notebook card
+       instead of being clipped; header and keypad stay pinned on screen. */
+    .board-viewport {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      max-width: min(540px, max(300px, calc(100vh - 360px)));
+      max-width: min(540px, max(300px, calc(100svh - 360px)));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 6px 0;
+      scrollbar-width: thin;
+      scrollbar-color: #d4c5b0 transparent;
+    }
+
+    .board-viewport::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .board-viewport::-webkit-scrollbar-thumb {
+      background: #d4c5b0;
+      border-radius: 3px;
+    }
+
     .sudoku-board {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
       width: 100%;
-      max-width: min(540px, 68vh);
-      /* Shrink so header + board + keypad still fit together on phones */
-      max-width: min(540px, max(300px, calc(100vh - 360px)));
-      max-width: min(540px, max(300px, calc(100svh - 360px)));
+      flex: 0 0 auto;
       aspect-ratio: 1 / 1;
       border: 4px solid #2b170c;
       background-color: #2b170c;
@@ -341,9 +370,7 @@
     /* Control Keypad & Buttons */
     .controls-wrapper {
       width: 100%;
-      max-width: min(540px, 68vh);
-      max-width: min(540px, max(300px, calc(100vh - 360px)));
-      max-width: min(540px, max(300px, calc(100svh - 360px)));
+      max-width: 540px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -482,6 +509,10 @@
 
     /* ---- Small-Screen (Phone) Adjustments ---- */
     @media (max-width: 640px) {
+      :root {
+        --wrapper-pad-y: 16px;
+      }
+
       .notebook-container {
         padding: 20px 12px 22px;
       }
@@ -764,8 +795,10 @@
         <p class="brand-subtitle">— SUDOKU —</p>
       </header>
 
-      <!-- Interactive 9x9 Sudoku Board -->
-      <div id="sudoku-board" class="sudoku-board" role="grid" aria-label="Sudoku Grid"></div>
+      <!-- Interactive 9x9 Sudoku Board (scrolls inside the card on small screens) -->
+      <div class="board-viewport">
+        <div id="sudoku-board" class="sudoku-board" role="grid" aria-label="Sudoku Grid"></div>
+      </div>
 
       <!-- Controls & Keypad -->
       <footer class="controls-wrapper">
