@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brew & Byte — Cozy Sudoku</title>
   <!-- Google Fonts for Playful & Elegant Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,9 +24,10 @@
     body {
       margin: 0;
       padding: 0;
-      width: 100%;
+      width: 100vw;
       min-height: 100vh;
       overflow-x: hidden;
+      overflow-y: auto;
       font-family: 'Outfit', sans-serif;
       background-color: #21120b;
       color: #3b2314;
@@ -34,13 +35,14 @@
 
     /* Wooden Desk Scene Container */
     .desk-wrapper {
-      width: 100%;
+      width: 100vw;
       min-height: 100vh;
       position: relative;
+      overflow-x: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px 8px;
+      padding: 40px 16px;
       background:
         radial-gradient(circle at 50% 50%, rgba(255, 230, 190, 0.08) 0%, rgba(0, 0, 0, 0.7) 100%),
         repeating-linear-gradient(0deg, #3d2214 0px, #321a0e 24px, #271309 48px);
@@ -75,28 +77,28 @@
     .prop-tea-mug {
       top: 2%;
       left: 2%;
-      width: clamp(90px, 11vw, 160px);
+      width: clamp(110px, 11vw, 160px);
       z-index: 2;
     }
 
     .prop-boba-cup {
       top: 2%;
       left: 14%;
-      width: clamp(75px, 9.5vw, 140px);
+      width: clamp(95px, 9.5vw, 140px);
       z-index: 2;
     }
 
     .prop-macbook {
       top: 2%;
       right: 2%;
-      width: clamp(160px, 20vw, 320px);
+      width: clamp(200px, 20vw, 320px);
       z-index: 2;
     }
 
     .prop-ipad {
       bottom: 2%;
       left: 1.5%;
-      width: clamp(130px, 16vw, 250px);
+      width: clamp(160px, 16vw, 250px);
       transform: rotate(-8deg);
       z-index: 2;
     }
@@ -108,7 +110,7 @@
     .prop-fountain-pen {
       top: 22%;
       right: 3.5%;
-      width: clamp(20px, 2.2vw, 34px);
+      width: clamp(22px, 2.2vw, 34px);
       transform: rotate(18deg);
       z-index: 2;
     }
@@ -116,7 +118,7 @@
     .prop-coffee-bag {
       bottom: 2%;
       right: 2%;
-      width: clamp(90px, 11vw, 170px);
+      width: clamp(110px, 11vw, 170px);
       transform: rotate(-5deg);
       z-index: 2;
     }
@@ -124,7 +126,7 @@
     .prop-airpods {
       bottom: 26%;
       right: 3.5%;
-      width: clamp(65px, 7.5vw, 110px);
+      width: clamp(75px, 7.5vw, 110px);
       transform: rotate(-12deg);
       z-index: 2;
     }
@@ -132,7 +134,7 @@
     .prop-sticky-notes {
       top: 28%;
       left: 2%;
-      width: clamp(80px, 9.5vw, 140px);
+      width: clamp(95px, 9.5vw, 140px);
       transform: rotate(-6deg);
       z-index: 2;
     }
@@ -140,7 +142,7 @@
     .prop-pencils {
       bottom: 30%;
       left: 14.5%;
-      width: clamp(80px, 10vw, 150px);
+      width: clamp(100px, 10vw, 150px);
       transform: rotate(55deg);
       z-index: 2;
     }
@@ -148,20 +150,21 @@
     .prop-papers {
       bottom: 6%;
       right: 14%;
-      width: clamp(140px, 18vw, 280px);
+      width: clamp(180px, 18vw, 280px);
       transform: rotate(12deg);
       z-index: 1;
     }
 
-    /* Notebook Centerpiece Overlay (Mobile Adaptive Fix) */
+    /* Notebook Centerpiece Overlay */
     .notebook-container {
       position: relative;
       z-index: 10;
-      width: min(96vw, 720px);
+      width: min(92vw, 760px);
+      min-height: 780px;
       background-color: #fbf7ee;
       border-radius: 8px 24px 24px 8px;
-      padding: clamp(12px, 2.5vh, 28px) clamp(16px, 3vw, 40px);
-      border-left: clamp(14px, 3vw, 32px) solid #1b3820;
+      padding: clamp(24px, 3vh, 32px) clamp(20px, 3.5vw, 44px);
+      border-left: clamp(20px, 3.5vw, 36px) solid #1b3820;
       box-shadow:
         -20px 25px 45px rgba(0, 0, 0, 0.65),
         inset 0 0 60px rgba(210, 195, 170, 0.45);
@@ -169,7 +172,6 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
     }
 
     /* Deckled Page Edge FX */
@@ -187,7 +189,7 @@
     /* Double-Loop Spiral Spine */
     .spiral-spine {
       position: absolute;
-      left: calc(-1 * clamp(20px, 3vw, 38px));
+      left: calc(-1 * clamp(28px, 4vw, 44px));
       top: 3%;
       bottom: 3%;
       display: flex;
@@ -198,8 +200,8 @@
     }
 
     .spiral-ring {
-      width: clamp(24px, 3.5vw, 44px);
-      height: clamp(8px, 1.2vh, 14px);
+      width: clamp(32px, 4.2vw, 48px);
+      height: clamp(10px, 1.4vh, 16px);
       background: linear-gradient(180deg, #d4d4d8 0%, #3f3f46 45%, #18181b 55%, #a1a1aa 100%);
       border-radius: 8px;
       box-shadow: 4px 5px 8px rgba(0, 0, 0, 0.55);
@@ -215,12 +217,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .brand-title {
       font-family: 'Fredoka', cursive;
-      font-size: clamp(20px, 3.2vw, 38px);
+      font-size: clamp(24px, 3.6vw, 42px);
       font-weight: 700;
       color: #3d2214;
       letter-spacing: 2px;
@@ -230,10 +232,10 @@
 
     .brand-subtitle {
       font-family: 'Kalam', cursive;
-      font-size: clamp(11px, 1.6vw, 16px);
+      font-size: clamp(13px, 1.8vw, 18px);
       font-weight: 700;
       color: #1f4e2b;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       margin: -2px 0 0 0;
       text-transform: uppercase;
     }
@@ -243,21 +245,14 @@
       display: grid;
       grid-template-columns: repeat(9, 1fr);
       width: 100%;
-      max-width: min(420px, 52vw);
+      max-width: min(540px, 68vh);
       aspect-ratio: 1 / 1;
       border: 4px solid #2b170c;
       background-color: #2b170c;
-      gap: 1px;
+      gap: 1.5px;
       border-radius: 6px;
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    }
-
-    @media (min-width: 768px) {
-      .sudoku-board {
-        max-width: min(480px, 56vh);
-        gap: 1.5px;
-      }
     }
 
     .sudoku-cell {
@@ -267,7 +262,7 @@
       justify-content: center;
       align-items: center;
       font-family: 'Fredoka', sans-serif;
-      font-size: clamp(14px, 2.5vh, 26px);
+      font-size: clamp(18px, 3vh, 30px);
       font-weight: 600;
       background-color: #ffffff;
       color: #2563eb;
@@ -336,30 +331,17 @@
     /* Control Keypad & Buttons */
     .controls-wrapper {
       width: 100%;
-      max-width: min(460px, 60vw);
+      max-width: min(540px, 68vh);
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-
-    @media (min-width: 768px) {
-      .controls-wrapper {
-        max-width: min(540px, 68vh);
-        gap: 10px;
-      }
+      gap: 10px;
     }
 
     .numpad {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
-      gap: 4px;
+      gap: 6px;
       width: 100%;
-    }
-
-    @media (min-width: 768px) {
-      .numpad {
-        gap: 6px;
-      }
     }
 
     .num-btn {
@@ -368,14 +350,14 @@
       background: #f4eee2;
       color: #3d2214;
       font-family: 'Fredoka', sans-serif;
-      font-size: clamp(12px, 2vh, 20px);
+      font-size: clamp(14px, 2.2vh, 22px);
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 0 #d4c5b0;
+      box-shadow: 0 3px 0 #d4c5b0;
       transition: all 0.1s ease;
     }
 
@@ -384,7 +366,7 @@
       border-color: #1f4e2b;
       color: #1f4e2b;
       transform: translateY(-2px);
-      box-shadow: 0 4px 0 #1f4e2b;
+      box-shadow: 0 5px 0 #1f4e2b;
     }
 
     .num-btn:active {
@@ -396,21 +378,21 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
     }
 
     .btn-secondary {
-      padding: clamp(6px, 1.2vh, 10px) clamp(10px, 1.8vw, 18px);
+      padding: clamp(8px, 1.5vh, 12px) clamp(12px, 2vw, 20px);
       background: #eae2d3;
       color: #3d2214;
       border: 2px solid #c9baa5;
       border-radius: 20px;
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(11px, 1.4vh, 14px);
+      font-size: clamp(12px, 1.6vh, 15px);
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 2px 0 #c9baa5;
+      box-shadow: 0 3px 0 #c9baa5;
       transition: all 0.15s ease;
     }
 
@@ -421,28 +403,28 @@
 
     .btn-primary {
       flex: 1;
-      padding: clamp(8px, 1.5vh, 12px) clamp(14px, 2vw, 24px);
+      padding: clamp(10px, 1.8vh, 14px) clamp(16px, 2.5vw, 28px);
       background: linear-gradient(180deg, #276337 0%, #173d20 100%);
       color: #ffffff;
       border: none;
       border-radius: 24px;
       font-family: 'Fredoka', sans-serif;
-      font-size: clamp(12px, 1.8vh, 16px);
+      font-size: clamp(14px, 2vh, 18px);
       font-weight: 600;
       letter-spacing: 1px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(23, 61, 32, 0.4), 0 2px 0 #0d2413;
+      box-shadow: 0 5px 12px rgba(23, 61, 32, 0.4), 0 3px 0 #0d2413;
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .btn-primary:hover {
       background: linear-gradient(180deg, #317844 0%, #1c4726 100%);
       transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(23, 61, 32, 0.5), 0 3px 0 #0d2413;
+      box-shadow: 0 7px 16px rgba(23, 61, 32, 0.5), 0 4px 0 #0d2413;
     }
 
     .btn-primary:active {
@@ -473,10 +455,9 @@
     .victory-card {
       background: #fbf7ee;
       border-radius: 24px;
-      padding: 28px 36px;
+      padding: 36px 44px;
       text-align: center;
-      max-width: 380px;
-      width: 90%;
+      max-width: 420px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
       border: 4px solid #1b3820;
       transform: scale(0.8);
@@ -770,14 +751,14 @@
     <!-- Victory Modal Popup -->
     <div id="victory-modal" class="victory-modal">
       <div class="victory-card">
-        <div style="font-size: 48px; margin-bottom: 8px;">🎉☕🍃</div>
-        <h2 style="font-family: 'Fredoka', sans-serif; font-size: 26px; color: #1b3820; margin: 0 0 6px 0;">Level
+        <div style="font-size: 54px; margin-bottom: 10px;">🎉☕🍃</div>
+        <h2 style="font-family: 'Fredoka', sans-serif; font-size: 32px; color: #1b3820; margin: 0 0 8px 0;">Level
           Complete!</h2>
-        <p style="font-family: 'Outfit', sans-serif; color: #5c3822; font-size: 14px; margin: 0 0 20px 0;">You solved
+        <p style="font-family: 'Outfit', sans-serif; color: #5c3822; font-size: 16px; margin: 0 0 24px 0;">You solved
           the Brew &amp; Byte Sudokuuuu, pretty sure it was easy for you</p>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <button class="btn-primary" style="width: 100%;" onclick="nextGame()">Next Game</button>
-          <button class="btn-secondary" style="width: 100%; padding: 10px;" onclick="restartGame()">Play Fresh Puzzle
+          <button class="btn-secondary" style="width: 100%; padding: 12px;" onclick="restartGame()">Play Fresh Puzzle
             🔄</button>
         </div>
       </div>
