@@ -6,7 +6,9 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 		/>
-		<title>World Explorer - Globe-Trotter Trivia Cross</title>
+		<title>
+			World Explorer - Globe-Trotter Trivia Cross (VIP Lounge Edition)
+		</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 		<link
 			href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Kalam:wght@400;700&family=Nunito:wght@600;700;800;900&display=swap"
@@ -23,7 +25,7 @@
 
 			body {
 				font-family: 'Nunito', sans-serif;
-				background: #0f172a;
+				background: #090d16;
 				overflow-x: hidden;
 			}
 
@@ -39,21 +41,37 @@
 			}
 
 			.animate-flight {
-				stroke-dasharray: 10, 10;
-				animation: dash 4s linear infinite;
+				stroke-dasharray: 12, 12;
+				animation: dash 5s linear infinite;
 			}
 
-			@keyframes pulse-glow {
+			/* VIP Gold Ambient Glow Animation */
+			@keyframes vip-glow {
 				0%,
 				100% {
 					box-shadow:
-						0 0 15px rgba(245, 158, 11, 0.8),
-						inset 0 0 8px rgba(253, 224, 71, 0.6);
+						0 0 20px rgba(245, 158, 11, 0.4),
+						inset 0 0 10px rgba(253, 224, 71, 0.3);
 				}
 				50% {
 					box-shadow:
-						0 0 25px rgba(245, 158, 11, 1),
-						inset 0 0 12px rgba(253, 224, 71, 0.9);
+						0 0 35px rgba(245, 158, 11, 0.7),
+						inset 0 0 18px rgba(253, 224, 71, 0.5);
+				}
+			}
+
+			.vip-card-glow {
+				animation: vip-glow 3s infinite ease-in-out;
+			}
+
+			/* Sound Button Glow */
+			@keyframes pulse-glow {
+				0%,
+				100% {
+					box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+				}
+				50% {
+					box-shadow: 0 0 25px rgba(245, 158, 11, 1);
 				}
 			}
 
@@ -68,6 +86,7 @@
 				color: #fef08a !important;
 			}
 
+			/* Crossword Cell Proportional Scaling */
 			.cross-cell {
 				position: relative;
 				aspect-ratio: 1;
@@ -76,22 +95,22 @@
 				justify-content: center;
 				font-family: 'Fredoka', sans-serif;
 				font-weight: 700;
-				border-radius: 8px;
+				border-radius: 10px;
 				transition: all 0.15s ease-out;
 				cursor: pointer;
 			}
 
 			.cross-cell.active-input {
 				background: #f59e0b !important;
-				color: #0f172a !important;
-				transform: scale(1.08);
-				box-shadow: 0 0 16px rgba(245, 158, 11, 0.9);
+				color: #090d16 !important;
+				transform: scale(1.1);
+				box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
 				z-index: 20;
 			}
 
 			.cross-cell.highlighted-word {
 				background: #38bdf8 !important;
-				color: #0f172a !important;
+				color: #090d16 !important;
 			}
 
 			.cross-cell.solved {
@@ -137,17 +156,17 @@
 	</head>
 
 	<body
-		class="min-h-screen w-screen flex flex-col justify-between relative overflow-hidden bg-slate-950 text-slate-100"
+		class="min-h-screen w-screen flex flex-col justify-between relative overflow-x-hidden bg-[#090d16] text-slate-100"
 	>
-		<!-- BACKGROUND: EXTENDED MULTIPLIED TRAVEL LINES (Planes removed for zero lag) -->
+		<!-- VIP LOUNGE ATMOSPHERIC BACKGROUND -->
 		<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 			<div
-				class="absolute inset-0 bg-gradient-to-b from-[#09152b] via-[#112447] via-60% to-[#1e130c]"
+				class="absolute inset-0 bg-gradient-to-b from-[#060911] via-[#0f172a] via-70% to-[#1a1008]"
 			></div>
 
-			<!-- Multiplied, extended SVG flight paths -->
+			<!-- Extended Flight Lines -->
 			<svg
-				class="absolute inset-0 w-full h-full opacity-30"
+				class="absolute inset-0 w-full h-full opacity-25"
 				viewBox="0 0 1200 800"
 				preserveAspectRatio="none"
 			>
@@ -164,7 +183,7 @@
 					stroke="#38bdf8"
 					stroke-width="2"
 					class="animate-flight"
-					style="animation-duration: 5s"
+					style="animation-duration: 6s"
 				/>
 				<path
 					d="M 100,850 Q 500,400 900,700 T 1300,450"
@@ -172,7 +191,7 @@
 					stroke="#ec4899"
 					stroke-width="1.5"
 					class="animate-flight"
-					style="animation-duration: 6s"
+					style="animation-duration: 7s"
 				/>
 				<path
 					d="M -100,400 Q 300,700 700,300 T 1250,600"
@@ -180,7 +199,7 @@
 					stroke="#10b981"
 					stroke-width="2"
 					class="animate-flight"
-					style="animation-duration: 3.5s"
+					style="animation-duration: 4.5s"
 				/>
 			</svg>
 		</div>
@@ -193,22 +212,28 @@
 			spellcheck="false"
 		/>
 
-		<!-- HEADER BAR -->
+		<!-- HEADER BAR WITH VIP LOUNGE BADGE -->
 		<header
-			class="relative z-30 w-full max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
+			class="relative z-30 w-full max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center"
 		>
 			<div class="flex items-center gap-3">
 				<div
-					class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-sky-500 flex items-center justify-center shadow-lg border border-amber-200/40"
+					class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-sky-500 flex items-center justify-center shadow-xl border border-amber-200/50 vip-card-glow"
 				>
-					<i class="fa-solid fa-plane-departure text-slate-950 text-xl"></i>
+					<i class="fa-solid fa-champagne-glasses text-slate-950 text-xl"></i>
 				</div>
 				<div>
-					<h1
-						class="text-xl sm:text-2xl font-heading font-extrabold text-amber-300 tracking-wide drop-shadow-md"
-					>
-						WORLD EXPLORER
-					</h1>
+					<div class="flex items-center gap-2">
+						<h1
+							class="text-xl sm:text-2xl font-heading font-extrabold text-amber-300 tracking-wide drop-shadow-md"
+						>
+							WORLD EXPLORER
+						</h1>
+						<span
+							class="bg-amber-500/20 border border-amber-400/60 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest hidden sm:inline-block"
+							>VIP Lounge</span
+						>
+					</div>
 					<p
 						class="text-[11px] text-sky-200/80 font-bold uppercase tracking-widest"
 					>
@@ -217,9 +242,10 @@
 				</div>
 			</div>
 
+			<!-- Score & Controls -->
 			<div class="flex items-center gap-2 sm:gap-4">
 				<div
-					class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-amber-400/40 backdrop-blur-md text-center shadow-md"
+					class="px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-amber-400/50 backdrop-blur-md text-center shadow-lg"
 				>
 					<div class="text-[9px] text-amber-300/80 font-bold uppercase">
 						Score
@@ -235,7 +261,7 @@
 				<button
 					id="sound-btn"
 					onclick="toggleAudio()"
-					class="px-3 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg"
+					class="px-3.5 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg"
 				>
 					<i
 						id="sound-icon"
@@ -256,12 +282,14 @@
 		<!-- PARTY RULE BANNER -->
 		<div class="relative z-30 w-full max-w-7xl mx-auto px-4 py-1.5">
 			<div
-				class="w-full bg-gradient-to-r from-amber-950/90 via-sky-950/90 to-amber-950/90 border border-amber-500/40 rounded-xl px-4 py-1.5 flex items-center justify-between shadow-lg text-xs font-bold text-amber-200"
+				class="w-full bg-gradient-to-r from-amber-950/90 via-sky-950/90 to-amber-950/90 border border-amber-500/40 rounded-xl px-4 py-2 flex items-center justify-between shadow-xl text-xs font-bold text-amber-200"
 			>
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-passport text-amber-400"></i>
+					<i
+						class="fa-solid fa-martini-glass-citrus text-amber-400 text-sm"
+					></i>
 					<span
-						>WORLD TRAVEL RULE:
+						>VIP LOUNGE RULE:
 						<span class="text-sky-300"
 							>1 SHOT FOR EVERY MINUTE YOU TAKE TO REACH 4000 PTS!</span
 						></span
@@ -274,16 +302,16 @@
 			</div>
 		</div>
 
-		<!-- MAIN CONTENT AREA -->
+		<!-- MAIN CONTENT AREA (Proportionate Scaling) -->
 		<main
-			class="relative z-20 w-full max-w-7xl mx-auto flex-1 px-2 sm:px-4 py-2 flex flex-col lg:flex-row items-center justify-center gap-4 overflow-hidden"
+			class="relative z-20 w-full max-w-7xl mx-auto flex-1 px-3 sm:px-4 py-3 flex flex-col lg:flex-row items-center justify-center gap-4"
 		>
 			<!-- LEFT: CROSSWORD MATRIX GRID BOARD -->
 			<div
-				class="w-full lg:w-3/5 h-full max-h-[580px] bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-3 sm:p-5 flex flex-col justify-between shadow-2xl relative"
+				class="w-full lg:w-3/5 h-full min-h-[460px] sm:min-h-[520px] bg-slate-900/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl relative vip-card-glow"
 			>
 				<div
-					class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2"
+					class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3"
 				>
 					<div class="flex items-center gap-2">
 						<i class="fa-solid fa-map text-amber-400"></i>
@@ -296,14 +324,14 @@
 					<div class="flex items-center gap-2">
 						<button
 							onclick="useHint()"
-							class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1"
+							class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1.5"
 						>
 							<i class="fa-solid fa-lightbulb text-amber-400"></i>
 							<span>Hint (-50)</span>
 						</button>
 						<button
 							onclick="autoSolveWord()"
-							class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/50 text-sky-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1"
+							class="px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/50 text-sky-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1.5"
 						>
 							<i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
 							<span>Auto Solve</span>
@@ -317,7 +345,7 @@
 				</div>
 
 				<div
-					class="flex-1 flex items-center justify-center my-auto overflow-hidden p-1 relative"
+					class="flex-1 flex items-center justify-center my-auto overflow-hidden p-2 relative"
 				>
 					<div
 						id="round-complete-toast"
@@ -334,14 +362,15 @@
 						</div>
 					</div>
 
+					<!-- Larger, proportionate grid wrapper -->
 					<div
 						id="crossword-grid"
-						class="grid gap-1 sm:gap-1.5 w-full h-full max-w-[440px] max-h-[440px] aspect-square mx-auto my-auto"
+						class="grid gap-1.5 sm:gap-2 w-full h-full max-w-[480px] max-h-[480px] aspect-square mx-auto my-auto"
 					></div>
 				</div>
 
 				<div
-					class="mt-2 bg-slate-950/90 border border-amber-500/40 rounded-xl p-2.5 text-center min-h-[44px] flex items-center justify-center"
+					class="mt-3 bg-slate-950/90 border border-amber-500/40 rounded-xl p-3 text-center min-h-[48px] flex items-center justify-center"
 				>
 					<p
 						id="active-clue-banner"
@@ -353,18 +382,20 @@
 			</div>
 
 			<!-- RIGHT: TRIVIA CLUES & SHOT COUNTER -->
-			<div class="w-full lg:w-2/5 flex flex-col gap-3 h-full max-h-[580px]">
+			<div
+				class="w-full lg:w-2/5 flex flex-col gap-3.5 h-full min-h-[460px] sm:min-h-[520px]"
+			>
 				<div
-					class="flex-1 bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-4 flex flex-col justify-between shadow-2xl overflow-hidden"
+					class="flex-1 bg-slate-900/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden vip-card-glow"
 				>
 					<h3
-						class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-2 border-b border-slate-800 pb-2"
+						class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-slate-800 pb-2.5"
 					>
 						<i class="fa-solid fa-earth-americas text-sky-400"></i> TRAVEL
 						TRIVIA CLUES
 					</h3>
 					<div
-						class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scroll"
+						class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scroll text-xs sm:text-sm"
 						id="clues-container"
 					>
 						<div>
@@ -375,7 +406,7 @@
 							</h4>
 							<div
 								id="across-clues"
-								class="space-y-1.5"
+								class="space-y-2"
 							></div>
 						</div>
 						<div class="mt-3">
@@ -386,24 +417,24 @@
 							</h4>
 							<div
 								id="down-clues"
-								class="space-y-1.5"
+								class="space-y-2"
 							></div>
 						</div>
 					</div>
 				</div>
 
 				<div
-					class="bg-gradient-to-r from-amber-950/90 to-slate-900/90 border border-amber-500/40 rounded-2xl p-3.5 flex items-center justify-between shadow-xl"
+					class="bg-gradient-to-r from-amber-950/90 to-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl"
 				>
 					<div class="flex items-center gap-3">
 						<div
-							class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-lg"
+							class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-xl"
 						>
 							<i class="fa-solid fa-glass-water"></i>
 						</div>
 						<div>
 							<div class="text-xs font-bold text-amber-200">
-								TIME SHOT COUNTER
+								VIP SHOT COUNTER
 							</div>
 							<div class="text-[10px] text-slate-400">
 								1 Shot added every minute while reaching 4000 pts!
@@ -427,9 +458,10 @@
 
 		<!-- FOOTER -->
 		<footer
-			class="relative z-30 w-full bg-slate-950 border-t border-slate-800 text-center py-2 text-[11px] text-slate-500 font-semibold"
+			class="relative z-30 w-full bg-slate-950 border-t border-slate-800 text-center py-2.5 text-xs text-slate-400 font-semibold"
 		>
-			World Explorer Trivia Cross &copy; 2026 • Luxury Globe-Trotter Arcade
+			World Explorer VIP Lounge Trivia Cross &copy; 2026 • Luxury Globe-Trotter
+			Arcade
 		</footer>
 
 		<!-- 4000 POINTS REWARD VIDEO MODAL -->
@@ -438,7 +470,7 @@
 			class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden"
 		>
 			<div
-				class="bg-slate-900 border-2 border-amber-400 rounded-3xl p-5 sm:p-7 max-w-lg w-full text-center shadow-2xl relative"
+				class="bg-slate-900 border-2 border-amber-400 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative"
 			>
 				<button
 					onclick="closeRewardModal()"
@@ -457,7 +489,7 @@
 					4000 POINTS MASTERED!
 				</h3>
 				<p class="text-slate-300 text-xs sm:text-sm mt-1">
-					You unlocked the Travel Champion Celebration Video!
+					You unlocked the VIP Travel Champion Celebration Video!
 				</p>
 
 				<div
@@ -483,9 +515,9 @@
 
 				<button
 					onclick="closeRewardModal()"
-					class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 text-slate-950 font-extrabold text-sm shadow-lg"
+					class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 text-slate-950 font-extrabold text-sm shadow-lg"
 				>
-					Continue Expedition
+					Continue VIP Expedition
 				</button>
 			</div>
 		</div>
@@ -501,11 +533,11 @@
 				const icon = document.getElementById('sound-icon');
 				if (audioEnabled) {
 					btn.className =
-						'px-3 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg';
+						'px-3.5 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg';
 					icon.className = 'fa-solid fa-volume-high text-amber-300';
 				} else {
 					btn.className =
-						'px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-400 hover:bg-slate-800 text-xs font-bold transition flex items-center gap-2 shadow-xs';
+						'px-3.5 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-400 hover:bg-slate-800 text-xs font-bold transition flex items-center gap-2 shadow-xs';
 					icon.className = 'fa-solid fa-volume-xmark text-slate-500';
 				}
 			}
@@ -738,17 +770,17 @@
 						cell.dataset.c = c;
 						if (cellData) {
 							cell.classList.add(
-								'bg-slate-800/90',
+								'bg-slate-800/95',
 								'border',
 								'border-slate-700',
 								'text-amber-200',
-								'text-base',
-								'sm:text-lg',
+								'text-lg',
+								'sm:text-2xl',
 							);
 							if (cellData.num) {
 								const numSpan = document.createElement('span');
 								numSpan.className =
-									'absolute top-0.5 left-1 text-[9px] font-bold text-amber-400/90 pointer-events-none';
+									'absolute top-1 left-1.5 text-[10px] font-bold text-amber-400/90 pointer-events-none';
 								numSpan.innerText = cellData.num;
 								cell.appendChild(numSpan);
 							}
@@ -778,7 +810,7 @@
 				placedWords.forEach((w) => {
 					const card = document.createElement('div');
 					card.id = `clue-card-${w.id}`;
-					card.className = `p-2 rounded-xl border text-xs cursor-pointer transition ${w.solved ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 line-through' : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-amber-400/50'}`;
+					card.className = `p-2.5 rounded-xl border text-xs sm:text-sm cursor-pointer transition ${w.solved ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 line-through' : 'bg-slate-950/60 border-slate-800 text-slate-200 hover:border-amber-400/50'}`;
 					card.innerHTML = `<span class="font-extrabold text-amber-400">${w.num}.</span> ${w.clue}`;
 					card.addEventListener('click', () => selectWord(w.id));
 					if (w.dir === 'across') acrossBox.appendChild(card);
