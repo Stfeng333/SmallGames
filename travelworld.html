@@ -127,6 +127,41 @@
       border-radius: 8px;
     }
 
+    /* --- Backdrop life: stars, clouds, route jets --- */
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.12;
+      }
+
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    .star {
+      animation: twinkle 3.5s ease-in-out infinite;
+    }
+
+    @keyframes cloud-drift {
+
+      from {
+        transform: translateX(-4%);
+      }
+
+      to {
+        transform: translateX(5%);
+      }
+    }
+
+    .cloud {
+      animation: cloud-drift 75s ease-in-out infinite alternate;
+      background: radial-gradient(ellipse at center, rgba(226, 232, 240, 0.16), transparent 68%);
+      filter: blur(14px);
+      border-radius: 50%;
+    }
+
     /* Hidden Native Proxy Input */
     #nativeInput {
       position: absolute;
@@ -146,116 +181,210 @@
     <!-- Sky & Globe Gradient -->
     <div class="absolute inset-0 bg-gradient-to-b from-[#09152b] via-[#112447] via-60% to-[#1e130c]"></div>
 
-    <!-- Animated Flight Lines -->
-    <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-      <path d="M 100,400 Q 300,100 600,350 T 1100,200" fill="none" stroke="#f59e0b" stroke-width="2"
-        class="animate-flight" />
-      <path d="M 200,600 Q 500,200 900,500 T 1150,300" fill="none" stroke="#38bdf8" stroke-width="1.5"
-        class="animate-flight" style="animation-duration: 4s;" />
+    <!-- ============ SHARED SVG ART LIBRARY (gradients, filters, aircraft) ============ -->
+    <svg width="0" height="0" class="absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="fus-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="40%" stop-color="#eef2f8" />
+          <stop offset="72%" stop-color="#c3cfe0" />
+          <stop offset="100%" stop-color="#92a4bc" />
+        </linearGradient>
+        <linearGradient id="fin-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#eef2f8" />
+          <stop offset="100%" stop-color="#71839e" />
+        </linearGradient>
+        <linearGradient id="wing-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e6ecf5" />
+          <stop offset="100%" stop-color="#55688180" />
+        </linearGradient>
+        <linearGradient id="eng-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#94a7bd" />
+          <stop offset="55%" stop-color="#eef2f8" />
+          <stop offset="100%" stop-color="#ffffff" />
+        </linearGradient>
+        <filter id="ct-blur" x="-40%" y="-80%" width="180%" height="260%">
+          <feGaussianBlur stdDeviation="7" />
+        </filter>
+        <filter id="nav-glow" x="-250%" y="-250%" width="600%" height="600%">
+          <feGaussianBlur stdDeviation="2.4" />
+        </filter>
+
+        <!-- Tiny route-traversing jet (top-down silhouette, nose facing +x) -->
+        <g id="jet-mini">
+          <path
+            d="M 24,0 L 8,-1.5 L -5,-11 L -9,-11 L -3,-1.5 L -15,-3 L -10,0 L -15,3 L -3,1.5 L -9,11 L -5,11 L 8,1.5 Z" />
+        </g>
+
+        <!-- FULL HERO AIRLINER (side profile, nose facing +x, viewBox fits -90..340 x 0..150) -->
+        <g id="jet-full">
+          <!-- Soft vapor contrail flowing behind the tail -->
+          <g filter="url(#ct-blur)">
+            <path d="M -75,72 C -20,68 12,68 26,70" stroke="rgba(255,255,255,0.38)" stroke-width="9"
+              stroke-linecap="round" />
+            <path d="M -45,75 C -6,73 14,73 28,73" stroke="rgba(56,189,248,0.32)" stroke-width="4" stroke-linecap="round" />
+          </g>
+
+          <!-- Far wing sweeping above the fuselage (shadowed) -->
+          <path d="M 168,52 L 108,20 L 126,15 L 190,50 Z" fill="#243247" />
+          <path d="M 108,20 L 98,8 L 106,6 L 114,17 Z" fill="#f59e0b" opacity="0.9" />
+          <!-- Far horizontal stabilizer -->
+          <path d="M 42,60 L 6,50 L 8,56 L 38,66 Z" fill="#1f2c40" />
+
+          <!-- Vertical tail fin + livery swoosh -->
+          <path d="M 88,55 L 36,2 C 32,-2 26,1 28,7 L 54,57 Z" fill="url(#fin-grad)" />
+          <path d="M 40,12 C 52,20 62,32 70,45" stroke="#f59e0b" stroke-width="4.5" stroke-linecap="round" fill="none" />
+
+          <!-- Main fuselage (nose right, tapered tailcone left) -->
+          <path d="M 26,72 C 46,58 100,51 156,51 C 210,51 258,56 288,64 C 300,68 306,72 303,75
+                   C 297,81 280,84 258,84 C 200,88 108,89 70,85 C 48,83 32,79 26,72 Z" fill="url(#fus-grad)" />
+          <!-- Belly shading -->
+          <path d="M 40,80 C 90,86 190,85 262,79 C 286,76 298,73 303,71 C 297,79 278,84 254,84
+                   C 198,88 110,89 72,85 C 54,83 44,82 40,80 Z" fill="rgba(15,23,42,0.26)" />
+
+          <!-- Cockpit windshield -->
+          <path d="M 278,62 L 293,68 L 288,71 L 275,64 Z" fill="#7dd3fc" opacity="0.95" />
+          <path d="M 275,64 L 288,71 L 285,72 L 273,66 Z" fill="#0c4a6e" opacity="0.85" />
+          <!-- Crown glint -->
+          <path d="M 120,52 C 180,51 240,55 280,63" stroke="rgba(255,255,255,0.5)" stroke-width="1.6" fill="none" />
+
+          <!-- Passenger window row -->
+          <g fill="#0f172a" opacity="0.82">
+            <circle cx="92" cy="66.5" r="2.1" />
+            <circle cx="104" cy="66.3" r="2.1" />
+            <circle cx="116" cy="66.1" r="2.1" />
+            <circle cx="128" cy="65.9" r="2.1" />
+            <circle cx="140" cy="65.7" r="2.1" />
+            <circle cx="152" cy="65.5" r="2.1" />
+            <circle cx="164" cy="65.3" r="2.1" />
+            <circle cx="176" cy="65.1" r="2.1" />
+            <circle cx="188" cy="64.9" r="2.1" />
+            <circle cx="200" cy="64.7" r="2.1" />
+            <circle cx="212" cy="64.5" r="2.1" />
+            <circle cx="224" cy="64.3" r="2.1" />
+            <circle cx="236" cy="64.1" r="2.1" />
+            <circle cx="248" cy="64" r="2.1" />
+          </g>
+          <!-- Livery cheatline + belly accent -->
+          <path d="M 58,72 C 130,71 210,69 280,68" stroke="#f59e0b" stroke-width="2.2" opacity="0.85" fill="none" />
+          <path d="M 46,80 C 110,86 210,84 272,75" stroke="#38bdf8" stroke-width="2.6" opacity="0.3" fill="none" />
+
+          <!-- Near wing sweeping below, winglet at tip -->
+          <path d="M 190,80 L 108,124 L 132,130 L 214,84 Z" fill="url(#wing-grad)" />
+          <path d="M 196,82 L 174,116" stroke="rgba(15,23,42,0.35)" stroke-width="1.4" />
+          <path d="M 132,130 L 120,142 L 128,144 L 140,132 Z" fill="#f59e0b" />
+
+          <!-- Engine slung under the near wing -->
+          <path d="M 172,94 L 190,86 L 194,93 L 178,101 Z" fill="#334155" />
+          <rect x="146" y="94" width="54" height="18" rx="9" fill="url(#eng-grad)" />
+          <ellipse cx="200" cy="103" rx="3.8" ry="7.5" fill="#0c1a2e" />
+          <ellipse cx="200" cy="103" rx="2" ry="4.5" fill="#38bdf8" opacity="0.8" />
+          <path d="M 146,99 L 135,103 L 146,107 Z" fill="#475569" />
+
+          <!-- Navigation lights -->
+          <circle cx="121" cy="141" r="2.4" fill="#22c55e" />
+          <circle cx="156" cy="51.5" r="2" fill="#ef4444" opacity="0.9" filter="url(#nav-glow)" />
+          <circle cx="156" cy="51.5" r="1.2" fill="#fecaca" />
+        </g>
+      </defs>
     </svg>
 
-    <!-- HIGH-FIDELITY STATIC JETLINER 1 (Top Left Sky) -->
-    <div class="absolute top-[8%] left-[6%] transform -rotate-12 opacity-80 drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
-      <svg width="240" height="120" viewBox="0 0 300 150" fill="none">
-        <defs>
-          <linearGradient id="fuselageGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" />
-            <stop offset="40%" stop-color="#e2e8f0" />
-            <stop offset="85%" stop-color="#64748b" />
-            <stop offset="100%" stop-color="#334155" />
-          </linearGradient>
-          <linearGradient id="wingGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#cbd5e1" />
-            <stop offset="50%" stop-color="#64748b" />
-            <stop offset="100%" stop-color="#1e293b" />
-          </linearGradient>
-          <linearGradient id="engineGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#38bdf8" />
-            <stop offset="100%" stop-color="#0284c7" />
-          </linearGradient>
-          <filter id="softGlow1" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-        <!-- Soft Vapor Contrail Tail -->
-        <path d="M -80,75 Q 10,74 80,73" stroke="rgba(255,255,255,0.35)" stroke-width="8" stroke-linecap="round"
-          filter="url(#softGlow1)" />
-        <path d="M -40,78 Q 20,77 75,76" stroke="rgba(56,189,248,0.25)" stroke-width="4" filter="url(#softGlow1)" />
+    <!-- Twinkling Night Sky -->
+    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <g fill="#e2e8f0">
+        <circle class="star" cx="140" cy="120" r="1.6" style="animation-delay:-0.4s" />
+        <circle class="star" cx="330" cy="70" r="1.2" style="animation-delay:-1.2s" />
+        <circle class="star" cx="520" cy="150" r="1.8" style="animation-delay:-2.1s" />
+        <circle class="star" cx="710" cy="90" r="1.3" style="animation-delay:-0.9s" />
+        <circle class="star" cx="900" cy="60" r="1.7" style="animation-delay:-1.7s" />
+        <circle class="star" cx="1080" cy="140" r="1.2" style="animation-delay:-2.6s" />
+        <circle class="star" cx="250" cy="230" r="1.4" style="animation-delay:-3s" />
+        <circle class="star" cx="460" cy="260" r="1.1" style="animation-delay:-1.5s" />
+        <circle class="star" cx="640" cy="220" r="1.5" style="animation-delay:-2.9s" />
+        <circle class="star" cx="820" cy="180" r="1.2" style="animation-delay:-0.7s" />
+        <circle class="star" cx="990" cy="250" r="1.6" style="animation-delay:-2.3s" />
+        <circle class="star" cy="300" cx="1150" r="1.1" style="animation-delay:-3.4s" />
+      </g>
+    </svg>
 
-        <!-- Left Wing (Underneath Shadowed) -->
-        <path d="M 115,75 L 180,125 L 205,115 L 155,75 Z" fill="#334155" stroke="#1e293b" stroke-width="1" />
+    <!-- Drifting Soft Clouds -->
+    <div class="cloud absolute" style="top:26%; right:24%; width:280px; height:90px; animation-delay:-12s;"></div>
+    <div class="cloud absolute" style="top:12%; left:34%; width:340px; height:110px; opacity:0.7; animation-delay:-31s;"></div>
+    <div class="cloud absolute" style="top:44%; left:12%; width:240px; height:70px; opacity:0.6; animation-delay:-52s;"></div>
 
-        <!-- Engine Under Left Wing -->
-        <rect x="145" y="90" width="30" height="12" rx="4" fill="#475569" stroke="#0f172a" />
-        <ellipse cx="145" cy="96" rx="3" ry="5" fill="url(#engineGlow)" />
+    <!-- Animated Flight Routes with Traversing Jets -->
+    <svg class="absolute inset-0 w-full h-full opacity-40" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice"
+      fill="none">
+      <path id="route-a" d="M -40,560 C 180,320 420,300 640,380 S 1040,240 1260,300" stroke="#f59e0b"
+        stroke-width="2" class="animate-flight" />
+      <path id="route-b" d="M 1240,120 C 1000,220 760,180 560,260 S 220,420 -20,480" stroke="#38bdf8"
+        stroke-width="1.6" class="animate-flight" style="animation-duration: 4.5s;" />
+      <path id="route-c" d="M 120,-40 C 300,140 420,180 560,140 S 760,40 900,80" stroke="#a78bfa" stroke-width="1.6"
+        class="animate-flight" style="animation-duration: 5.5s;" />
 
-        <!-- Main Fuselage -->
-        <path d="M 50,75 C 50,55 120,58 240,70 C 275,74 285,75 270,78 C 210,87 110,88 50,75 Z"
-          fill="url(#fuselageGrad1)" stroke="#475569" stroke-width="1" />
+      <g fill="#fbbf24" opacity="0.9">
+        <use href="#jet-mini" transform="scale(1.3)" />
+        <animateMotion dur="16s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#route-a" />
+        </animateMotion>
+      </g>
+      <g fill="#7dd3fc" opacity="0.8">
+        <use href="#jet-mini" transform="scale(1.05)" />
+        <animateMotion dur="21s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#route-b" />
+        </animateMotion>
+      </g>
+      <g fill="#c4b5fd" opacity="0.75">
+        <use href="#jet-mini" transform="scale(0.85)" />
+        <animateMotion dur="13s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#route-c" />
+        </animateMotion>
+      </g>
+    </svg>
 
-        <!-- Passenger Cabin Windows -->
-        <g fill="#0f172a" opacity="0.85">
-          <circle cx="100" cy="71" r="2" />
-          <circle cx="112" cy="71.5" r="2" />
-          <circle cx="124" cy="72" r="2" />
-          <circle cx="136" cy="72.5" r="2" />
-          <circle cx="148" cy="73" r="2" />
-          <circle cx="160" cy="73.5" r="2" />
-          <circle cx="172" cy="74" r="2" />
-          <circle cx="184" cy="74.5" r="2" />
-          <circle cx="196" cy="75" r="2" />
-          <circle cx="208" cy="75.5" r="2" />
-          <circle cx="220" cy="76" r="2" />
-        </g>
-
-        <!-- Cockpit Glass Windshield -->
-        <path d="M 242,71 Q 252,72 258,74 Q 250,76 242,74 Z" fill="#0284c7" />
-
-        <!-- Tail Fin Vertical Stabilizer -->
-        <path d="M 65,72 L 35,28 L 60,33 L 88,71 Z" fill="url(#wingGrad1)" stroke="#1e293b" stroke-width="1" />
-        <path d="M 37,29 L 33,20 L 42,22 L 45,30 Z" fill="#f59e0b" /> <!-- Gold Accent Tail Tip -->
-
-        <!-- Right Main Wing (Toplit) -->
-        <path d="M 125,73 L 195,20 L 218,28 L 165,73 Z" fill="url(#wingGrad1)" stroke="#1e293b" stroke-width="1" />
-        <!-- Winglet -->
-        <path d="M 195,20 L 202,8 L 210,12 L 202,23 Z" fill="#f59e0b" />
-
-        <!-- Engine Under Right Wing -->
-        <rect x="155" y="42" width="32" height="13" rx="4" fill="#64748b" stroke="#1e293b" />
-        <ellipse cx="155" cy="48.5" rx="3.5" ry="5.5" fill="url(#engineGlow)" />
+    <!-- HERO AIRLINER (Top Left Sky) -->
+    <div class="absolute top-[9%] left-[3%] -rotate-12 opacity-90 drop-shadow-[0_18px_30px_rgba(0,0,0,0.55)]">
+      <svg width="310" viewBox="-90 0 430 150" fill="none" aria-hidden="true">
+        <use href="#jet-full" />
       </svg>
     </div>
 
-    <!-- HIGH-FIDELITY STATIC JETLINER 2 (Right Horizon Facing Inward) -->
-    <div class="absolute top-[22%] right-[5%] transform rotate-6 opacity-75 drop-shadow-[0_12px_20px_rgba(0,0,0,0.5)]">
-      <svg width="200" height="100" viewBox="0 0 300 150" fill="none">
-        <!-- Vapor Trail -->
-        <path d="M 380,75 Q 300,76 220,77" stroke="rgba(255,255,255,0.25)" stroke-width="7" stroke-linecap="round"
-          filter="url(#softGlow1)" />
-
-        <!-- Flipped Jet Hull facing Left -->
-        <g transform="translate(300, 0) scale(-1, 1)">
-          <path d="M 115,75 L 180,125 L 205,115 L 155,75 Z" fill="#1e293b" />
-          <path d="M 50,75 C 50,55 120,58 240,70 C 275,74 285,75 270,78 C 210,87 110,88 50,75 Z"
-            fill="url(#fuselageGrad1)" stroke="#334155" />
-          <path d="M 242,71 Q 252,72 258,74 Q 250,76 242,74 Z" fill="#38bdf8" />
-          <path d="M 65,72 L 35,28 L 60,33 L 88,71 Z" fill="url(#wingGrad1)" />
-          <path d="M 125,73 L 195,20 L 218,28 L 165,73 Z" fill="url(#wingGrad1)" />
-        </g>
+    <!-- DISTANT AIRLINER (Right Horizon, Facing Inward) -->
+    <div class="absolute top-[13%] right-[2.5%] rotate-3 opacity-55 drop-shadow-[0_12px_22px_rgba(0,0,0,0.45)]">
+      <svg width="200" viewBox="-90 0 430 150" fill="none" aria-hidden="true">
+        <use href="#jet-full" transform="translate(340,0) scale(-1,1)" />
       </svg>
     </div>
 
-    <!-- Compass Rose Watermark -->
-    <g transform="translate(1000, 180) scale(0.8)" stroke="#f59e0b" stroke-width="1" fill="none" opacity="0.2">
-      <circle cx="0" cy="0" r="80" />
-      <circle cx="0" cy="0" r="70" stroke-dasharray="4,4" />
-      <path d="M 0,-90 L 15,-20 L 90,0 L 20,15 L 0,90 L -15,20 L -90,0 L -20,-15 Z" fill="#f59e0b" opacity="0.2" />
-    </g>
+    <!-- Wireframe Globe with Compass Rose -->
+    <svg class="absolute bottom-[15%] right-[2%] w-44 h-44 opacity-25" viewBox="0 0 200 200" fill="none"
+      aria-hidden="true">
+      <g stroke="#38bdf8" stroke-width="1.2">
+        <circle cx="100" cy="100" r="78" />
+        <ellipse cx="100" cy="100" rx="30" ry="78" />
+        <ellipse cx="100" cy="100" rx="56" ry="78" opacity="0.7" />
+        <path d="M 22,100 H 178" opacity="0.8" />
+        <path d="M 32,60 C 80,48 120,48 168,60" opacity="0.6" />
+        <path d="M 32,140 C 80,152 120,152 168,140" opacity="0.6" />
+      </g>
+      <g stroke="#f59e0b" stroke-width="1.4" opacity="0.9">
+        <circle cx="100" cy="100" r="58" stroke-dasharray="3 5" />
+        <path d="M 100,34 V 48 M 100,152 V 166 M 34,100 H 48 M 152,100 H 166" />
+      </g>
+      <path d="M 100,66 L 108,90 L 132,100 L 108,110 L 100,134 L 92,110 L 68,100 L 92,90 Z" fill="#f59e0b"
+        opacity="0.55" />
+    </svg>
 
-    <!-- Silhouetted World Landmarks Footer Band -->
+    <!-- Silhouetted World Landmarks Footer Band (layered skyline) -->
     <div
-      class="absolute bottom-0 left-0 w-full h-28 opacity-20 text-amber-200 fill-current flex justify-between items-end px-4">
+      class="absolute bottom-0 left-0 w-full flex justify-between items-end px-4 opacity-10 text-slate-200 fill-current">
+      <svg class="w-full h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <path
+          d="M0,100 L20,60 L50,100 L140,100 L160,40 L180,100 L260,100 C280,70 320,70 340,100 L430,100 L450,25 L470,100 L540,100 L560,55 L600,100 L660,100 Q700,65 740,100 L880,100 L900,20 L920,100 L1000,100 Z" />
+      </svg>
+    </div>
+    <div
+      class="absolute bottom-0 left-0 w-full h-28 flex justify-between items-end px-4 opacity-20 text-amber-200 fill-current">
       <svg class="w-full h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
         <path
           d="M0,100 L30,40 L60,100 L120,100 L135,10 L150,100 L220,100 C240,60 280,60 300,100 L400,100 L410,20 L420,100 L500,100 L520,30 L540,100 L650,100 Q700,50 750,100 L880,100 L900,15 L920,100 L1000,100 Z" />
@@ -482,8 +611,10 @@
 
       <div
         class="my-4 bg-slate-950 rounded-2xl overflow-hidden border border-amber-500/40 relative aspect-video flex items-center justify-center">
-        <iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/zBQ1up05Z7k?autoplay=1"
-          title="Reward Video" frameborder="0"
+        <!-- Iframe source is only attached the moment the 4000-point reward opens,
+             so nothing loads (or plays audio) before the player earns the video -->
+        <iframe id="reward-video" class="w-full h-full absolute inset-0" data-idle="1"
+          data-src="https://www.youtube.com/embed/zBQ1up05Z7k?autoplay=1" title="Reward Video" frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
         </iframe>
@@ -1037,23 +1168,33 @@
       document.getElementById('total-words').innerText = placedWords.length;
     }
 
+    let rewardShown = false; // the 4000-point celebration opens once per session
+
     function triggerRewardModal() {
+      if (rewardShown) return;
+      rewardShown = true;
+
       const modal = document.getElementById('reward-modal');
-      const video = document.getElementById('reward-video');
-      modal.classList.remove('hidden');
-      if (video) {
-        video.play().catch(e => console.log('Autoplay prevented:', e));
+      const iframe = document.getElementById('reward-video');
+
+      // Attach the live YouTube source only now that the reward has been earned —
+      // autoplay starts inside the freshly-loaded frame, with the user gesture
+      // that triggered the solve, so browsers permit the audio.
+      if (iframe && !iframe.getAttribute('src')) {
+        iframe.setAttribute('src', iframe.dataset.src);
       }
+
+      modal.classList.remove('hidden');
     }
 
     function closeRewardModal() {
       const modal = document.getElementById('reward-modal');
       modal.classList.add('hidden');
-      // Reset iframe source to stop playback when closed
-      const iframe = modal.querySelector('iframe');
+
+      // Detach the source to fully stop video + audio playback
+      const iframe = document.getElementById('reward-video');
       if (iframe) {
-        const src = iframe.src;
-        iframe.src = src;
+        iframe.removeAttribute('src');
       }
     }  </script>
 </body>
