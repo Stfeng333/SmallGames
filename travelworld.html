@@ -174,10 +174,10 @@
   </style>
 </head>
 
-<body class="min-h-screen w-screen flex flex-col justify-between relative overflow-hidden bg-slate-950 text-slate-100">
+<body class="min-h-dvh w-full flex flex-col justify-between relative overflow-x-hidden overflow-y-auto bg-slate-950 text-slate-100">
 
-  <!-- ==================== WORLD TRAVEL BACKDROP ==================== -->
-  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+  <!-- ==================== WORLD TRAVEL BACKDROP (fixed wallpaper) ==================== -->
+  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
     <!-- Sky & Globe Gradient -->
     <div class="absolute inset-0 bg-gradient-to-b from-[#09152b] via-[#112447] via-60% to-[#1e130c]"></div>
 
@@ -454,7 +454,7 @@
 
     <!-- LEFT: CROSSWORD MATRIX GRID BOARD & LEFT CONTROL PANEL -->
     <div
-      class="w-full lg:w-3/5 h-full max-h-[580px] bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-3 sm:p-5 flex flex-col justify-between shadow-2xl relative">
+      class="w-full lg:w-3/5 lg:h-full lg:max-h-[580px] bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-3xl p-3 sm:p-5 flex flex-col justify-between shadow-2xl relative">
 
       <!-- Board Header & Left-Side Control Panel -->
       <div
@@ -511,7 +511,7 @@
     </div>
 
     <!-- RIGHT: TRIVIA CLUES & SHOT COUNTER PANEL -->
-    <div class="w-full lg:w-2/5 flex flex-col gap-3 h-full max-h-[580px]">
+    <div class="w-full lg:w-2/5 flex flex-col gap-3 lg:h-full lg:max-h-[580px]">
 
       <!-- Trivia Clues Scroll Container -->
       <div
