@@ -647,10 +647,26 @@
       }
     }
 
+    // ONE shared AudioContext for the whole session. Creating a new context per
+    // sound used to leak hundreds of audio renderer channels before the 4000-pt
+    // reward — which crashes Chrome's audio service and makes the YouTube embed
+    // show "Audio renderer error, please restart your computer".
+    let sharedAudioCtx = null;
+
+    function getAudioCtx() {
+      if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+        sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume().catch(() => { });
+      }
+      return sharedAudioCtx;
+    }
+
     function playTone(freq, type, duration) {
       if (!audioEnabled) return;
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getAudioCtx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = type;
@@ -1177,6 +1193,14 @@
       const modal = document.getElementById('reward-modal');
       const iframe = document.getElementById('reward-video');
 
+      // Suspend the game's audio context so the video gets a clean audio
+      // renderer (a busy one is what triggers the YouTube renderer error)
+      try {
+        if (sharedAudioCtx && sharedAudioCtx.state === 'running') {
+          sharedAudioCtx.suspend();
+        }
+      } catch (e) { }
+
       // Attach the live YouTube source only now that the reward has been earned —
       // autoplay starts inside the freshly-loaded frame, with the user gesture
       // that triggered the solve, so browsers permit the audio.
@@ -1196,6 +1220,13 @@
       if (iframe) {
         iframe.removeAttribute('src');
       }
+
+      // Give the game sounds back their audio context
+      try {
+        if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+          sharedAudioCtx.resume().catch(() => { });
+        }
+      } catch (e) { }
     }  </script>
 </body>
 
