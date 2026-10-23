@@ -33,7 +33,7 @@
 				font-family: 'Fredoka', cursive;
 			}
 
-			/* Extended Multiplied Flight Lines Animation */
+			/* Hardware-accelerated lightweight flight path animation */
 			@keyframes dash {
 				to {
 					stroke-dashoffset: -60;
@@ -42,36 +42,18 @@
 
 			.animate-flight {
 				stroke-dasharray: 12, 12;
-				animation: dash 5s linear infinite;
-			}
-
-			/* VIP Gold Ambient Glow Animation */
-			@keyframes vip-glow {
-				0%,
-				100% {
-					box-shadow:
-						0 0 20px rgba(245, 158, 11, 0.4),
-						inset 0 0 10px rgba(253, 224, 71, 0.3);
-				}
-				50% {
-					box-shadow:
-						0 0 35px rgba(245, 158, 11, 0.7),
-						inset 0 0 18px rgba(253, 224, 71, 0.5);
-				}
-			}
-
-			.vip-card-glow {
-				animation: vip-glow 3s infinite ease-in-out;
+				animation: dash 6s linear infinite;
+				will-change: stroke-dashoffset;
 			}
 
 			/* Sound Button Glow */
 			@keyframes pulse-glow {
 				0%,
 				100% {
-					box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+					box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
 				}
 				50% {
-					box-shadow: 0 0 25px rgba(245, 158, 11, 1);
+					box-shadow: 0 0 18px rgba(245, 158, 11, 0.9);
 				}
 			}
 
@@ -86,7 +68,7 @@
 				color: #fef08a !important;
 			}
 
-			/* Crossword Cell Proportional Scaling */
+			/* Crossword Cell Proportional Scaling & GPU Render Optimization */
 			.cross-cell {
 				position: relative;
 				aspect-ratio: 1;
@@ -95,16 +77,19 @@
 				justify-content: center;
 				font-family: 'Fredoka', sans-serif;
 				font-weight: 700;
-				border-radius: 10px;
-				transition: all 0.15s ease-out;
+				border-radius: 8px;
+				transition:
+					background-color 0.15s ease,
+					transform 0.15s ease;
 				cursor: pointer;
+				will-change: transform, background-color;
 			}
 
 			.cross-cell.active-input {
 				background: #f59e0b !important;
 				color: #090d16 !important;
-				transform: scale(1.1);
-				box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
+				transform: scale(1.08);
+				box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
 				z-index: 20;
 			}
 
@@ -117,7 +102,7 @@
 				background: #10b981 !important;
 				color: #ffffff !important;
 				border-color: #34d399 !important;
-				animation: pop-solve 0.35s ease-out;
+				animation: pop-solve 0.3s ease-out;
 			}
 
 			@keyframes pop-solve {
@@ -125,7 +110,7 @@
 					transform: scale(1);
 				}
 				50% {
-					transform: scale(1.15);
+					transform: scale(1.12);
 				}
 				100% {
 					transform: scale(1);
@@ -147,10 +132,11 @@
 			#nativeInput {
 				position: absolute;
 				opacity: 0;
-				top: -1000px;
-				left: -1000px;
+				top: -100px;
+				left: -100px;
 				width: 1px;
 				height: 1px;
+				pointer-events: none;
 			}
 		</style>
 	</head>
@@ -158,7 +144,7 @@
 	<body
 		class="min-h-screen w-screen flex flex-col justify-between relative overflow-x-hidden bg-[#090d16] text-slate-100"
 	>
-		<!-- VIP LOUNGE ATMOSPHERIC BACKGROUND -->
+		<!-- VIP LOUNGE ATMOSPHERIC BACKGROUND (OPTIMIZED) -->
 		<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 			<div
 				class="absolute inset-0 bg-gradient-to-b from-[#060911] via-[#0f172a] via-70% to-[#1a1008]"
@@ -166,7 +152,7 @@
 
 			<!-- Extended Flight Lines -->
 			<svg
-				class="absolute inset-0 w-full h-full opacity-25"
+				class="absolute inset-0 w-full h-full opacity-20"
 				viewBox="0 0 1200 800"
 				preserveAspectRatio="none"
 			>
@@ -174,7 +160,7 @@
 					d="M -50,100 Q 300,50 600,400 T 1250,200"
 					fill="none"
 					stroke="#f59e0b"
-					stroke-width="2.5"
+					stroke-width="2"
 					class="animate-flight"
 				/>
 				<path
@@ -182,14 +168,6 @@
 					fill="none"
 					stroke="#38bdf8"
 					stroke-width="2"
-					class="animate-flight"
-					style="animation-duration: 6s"
-				/>
-				<path
-					d="M 100,850 Q 500,400 900,700 T 1300,450"
-					fill="none"
-					stroke="#ec4899"
-					stroke-width="1.5"
 					class="animate-flight"
 					style="animation-duration: 7s"
 				/>
@@ -199,7 +177,7 @@
 					stroke="#10b981"
 					stroke-width="2"
 					class="animate-flight"
-					style="animation-duration: 4.5s"
+					style="animation-duration: 5s"
 				/>
 			</svg>
 		</div>
@@ -214,13 +192,13 @@
 
 		<!-- HEADER BAR WITH VIP LOUNGE BADGE -->
 		<header
-			class="relative z-30 w-full max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center"
+			class="relative z-30 w-full max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
 		>
 			<div class="flex items-center gap-3">
 				<div
-					class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-sky-500 flex items-center justify-center shadow-xl border border-amber-200/50 vip-card-glow"
+					class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-sky-500 flex items-center justify-center shadow-lg border border-amber-200/50"
 				>
-					<i class="fa-solid fa-champagne-glasses text-slate-950 text-xl"></i>
+					<i class="fa-solid fa-champagne-glasses text-slate-950 text-lg"></i>
 				</div>
 				<div>
 					<div class="flex items-center gap-2">
@@ -243,16 +221,16 @@
 			</div>
 
 			<!-- Score & Controls -->
-			<div class="flex items-center gap-2 sm:gap-4">
+			<div class="flex items-center gap-2 sm:gap-3">
 				<div
-					class="px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-amber-400/50 backdrop-blur-md text-center shadow-lg"
+					class="px-3 py-1 rounded-xl bg-slate-900/90 border border-amber-400/40 text-center shadow-md"
 				>
 					<div class="text-[9px] text-amber-300/80 font-bold uppercase">
 						Score
 					</div>
 					<div
 						id="score-display"
-						class="text-sm sm:text-base font-extrabold text-amber-400"
+						class="text-xs sm:text-sm font-extrabold text-amber-400"
 					>
 						0 PTS
 					</div>
@@ -261,7 +239,7 @@
 				<button
 					id="sound-btn"
 					onclick="toggleAudio()"
-					class="px-3.5 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg"
+					class="px-3 py-1.5 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-1.5 sound-active-shine shadow-md"
 				>
 					<i
 						id="sound-icon"
@@ -272,7 +250,7 @@
 
 				<button
 					onclick="regenerateGame()"
-					class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-600 hover:to-sky-600 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl transition transform active:scale-95 flex items-center gap-2"
+					class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-600 hover:to-sky-600 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md transition transform active:scale-95 flex items-center gap-1.5"
 				>
 					<i class="fa-solid fa-compass"></i> <span>New Flight</span>
 				</button>
@@ -280,9 +258,9 @@
 		</header>
 
 		<!-- PARTY RULE BANNER -->
-		<div class="relative z-30 w-full max-w-7xl mx-auto px-4 py-1.5">
+		<div class="relative z-30 w-full max-w-7xl mx-auto px-4 py-1">
 			<div
-				class="w-full bg-gradient-to-r from-amber-950/90 via-sky-950/90 to-amber-950/90 border border-amber-500/40 rounded-xl px-4 py-2 flex items-center justify-between shadow-xl text-xs font-bold text-amber-200"
+				class="w-full bg-gradient-to-r from-amber-950/90 via-sky-950/90 to-amber-950/90 border border-amber-500/40 rounded-xl px-4 py-1.5 flex items-center justify-between shadow-md text-xs font-bold text-amber-200"
 			>
 				<div class="flex items-center gap-2">
 					<i
@@ -302,16 +280,16 @@
 			</div>
 		</div>
 
-		<!-- MAIN CONTENT AREA (Proportionate Scaling) -->
+		<!-- MAIN CONTENT AREA -->
 		<main
-			class="relative z-20 w-full max-w-7xl mx-auto flex-1 px-3 sm:px-4 py-3 flex flex-col lg:flex-row items-center justify-center gap-4"
+			class="relative z-20 w-full max-w-7xl mx-auto flex-1 px-3 sm:px-4 py-2 flex flex-col lg:flex-row items-center justify-center gap-3"
 		>
 			<!-- LEFT: CROSSWORD MATRIX GRID BOARD -->
 			<div
-				class="w-full lg:w-3/5 h-full min-h-[460px] sm:min-h-[520px] bg-slate-900/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl relative vip-card-glow"
+				class="w-full lg:w-3/5 h-full min-h-[420px] sm:min-h-[480px] bg-slate-900/90 border border-amber-500/30 rounded-3xl p-3 sm:p-5 flex flex-col justify-between shadow-xl relative"
 			>
 				<div
-					class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3"
+					class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2"
 				>
 					<div class="flex items-center gap-2">
 						<i class="fa-solid fa-map text-amber-400"></i>
@@ -324,14 +302,14 @@
 					<div class="flex items-center gap-2">
 						<button
 							onclick="useHint()"
-							class="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1.5"
+							class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1"
 						>
 							<i class="fa-solid fa-lightbulb text-amber-400"></i>
 							<span>Hint (-50)</span>
 						</button>
 						<button
 							onclick="autoSolveWord()"
-							class="px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/50 text-sky-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1.5"
+							class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/50 text-sky-300 text-xs font-extrabold transition active:scale-95 flex items-center gap-1"
 						>
 							<i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
 							<span>Auto Solve</span>
@@ -345,7 +323,7 @@
 				</div>
 
 				<div
-					class="flex-1 flex items-center justify-center my-auto overflow-hidden p-2 relative"
+					class="flex-1 flex items-center justify-center my-auto overflow-hidden p-1 relative"
 				>
 					<div
 						id="round-complete-toast"
@@ -362,15 +340,15 @@
 						</div>
 					</div>
 
-					<!-- Larger, proportionate grid wrapper -->
+					<!-- Proportionate grid wrapper -->
 					<div
 						id="crossword-grid"
-						class="grid gap-1.5 sm:gap-2 w-full h-full max-w-[480px] max-h-[480px] aspect-square mx-auto my-auto"
+						class="grid gap-1 sm:gap-1.5 w-full h-full max-w-[440px] max-h-[440px] aspect-square mx-auto my-auto"
 					></div>
 				</div>
 
 				<div
-					class="mt-3 bg-slate-950/90 border border-amber-500/40 rounded-xl p-3 text-center min-h-[48px] flex items-center justify-center"
+					class="mt-2 bg-slate-950/90 border border-amber-500/30 rounded-xl p-2.5 text-center min-h-[42px] flex items-center justify-center"
 				>
 					<p
 						id="active-clue-banner"
@@ -383,52 +361,52 @@
 
 			<!-- RIGHT: TRIVIA CLUES & SHOT COUNTER -->
 			<div
-				class="w-full lg:w-2/5 flex flex-col gap-3.5 h-full min-h-[460px] sm:min-h-[520px]"
+				class="w-full lg:w-2/5 flex flex-col gap-2.5 h-full min-h-[420px] sm:min-h-[480px]"
 			>
 				<div
-					class="flex-1 bg-slate-900/85 backdrop-blur-md border border-amber-500/40 rounded-3xl p-4 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden vip-card-glow"
+					class="flex-1 bg-slate-900/90 border border-amber-500/30 rounded-3xl p-4 flex flex-col justify-between shadow-xl overflow-hidden"
 				>
 					<h3
-						class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider mb-3 flex items-center gap-2 border-b border-slate-800 pb-2.5"
+						class="text-xs sm:text-sm font-extrabold text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-2 border-b border-slate-800 pb-2"
 					>
 						<i class="fa-solid fa-earth-americas text-sky-400"></i> TRAVEL
 						TRIVIA CLUES
 					</h3>
 					<div
-						class="flex-1 overflow-y-auto pr-1 space-y-3 custom-scroll text-xs sm:text-sm"
+						class="flex-1 overflow-y-auto pr-1 space-y-2.5 custom-scroll text-xs sm:text-sm"
 						id="clues-container"
 					>
 						<div>
 							<h4
-								class="text-[11px] font-extrabold text-sky-400 uppercase tracking-widest mb-1.5"
+								class="text-[11px] font-extrabold text-sky-400 uppercase tracking-widest mb-1"
 							>
 								Across
 							</h4>
 							<div
 								id="across-clues"
-								class="space-y-2"
+								class="space-y-1.5"
 							></div>
 						</div>
-						<div class="mt-3">
+						<div class="mt-2.5">
 							<h4
-								class="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest mb-1.5"
+								class="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest mb-1"
 							>
 								Down
 							</h4>
 							<div
 								id="down-clues"
-								class="space-y-2"
+								class="space-y-1.5"
 							></div>
 						</div>
 					</div>
 				</div>
 
 				<div
-					class="bg-gradient-to-r from-amber-950/90 to-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex items-center justify-between shadow-xl"
+					class="bg-gradient-to-r from-amber-950/90 to-slate-900/90 border border-amber-500/40 rounded-2xl p-3 flex items-center justify-between shadow-lg"
 				>
 					<div class="flex items-center gap-3">
 						<div
-							class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-xl"
+							class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 text-lg"
 						>
 							<i class="fa-solid fa-glass-water"></i>
 						</div>
@@ -458,7 +436,7 @@
 
 		<!-- FOOTER -->
 		<footer
-			class="relative z-30 w-full bg-slate-950 border-t border-slate-800 text-center py-2.5 text-xs text-slate-400 font-semibold"
+			class="relative z-30 w-full bg-slate-950 border-t border-slate-800 text-center py-2 text-[11px] text-slate-400 font-semibold"
 		>
 			World Explorer VIP Lounge Trivia Cross &copy; 2026 • Luxury Globe-Trotter
 			Arcade
@@ -470,7 +448,7 @@
 			class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden"
 		>
 			<div
-				class="bg-slate-900 border-2 border-amber-400 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative"
+				class="bg-slate-900 border-2 border-amber-400 rounded-3xl p-6 max-w-lg w-full text-center shadow-2xl relative"
 			>
 				<button
 					onclick="closeRewardModal()"
@@ -515,14 +493,14 @@
 
 				<button
 					onclick="closeRewardModal()"
-					class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 text-slate-950 font-extrabold text-sm shadow-lg"
+					class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-sky-500 text-slate-950 font-extrabold text-sm shadow-lg"
 				>
 					Continue VIP Expedition
 				</button>
 			</div>
 		</div>
 
-		<!-- JAVASCRIPT GAME ENGINE -->
+		<!-- JAVASCRIPT GAME ENGINE (LAG FIX APPLIED) -->
 		<script>
 			const WIN_THRESHOLD = 4000;
 			let audioEnabled = true;
@@ -533,11 +511,11 @@
 				const icon = document.getElementById('sound-icon');
 				if (audioEnabled) {
 					btn.className =
-						'px-3.5 py-2 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-2 sound-active-shine shadow-lg';
+						'px-3 py-1.5 rounded-xl border border-amber-500/80 text-xs font-bold transition flex items-center gap-1.5 sound-active-shine shadow-md';
 					icon.className = 'fa-solid fa-volume-high text-amber-300';
 				} else {
 					btn.className =
-						'px-3.5 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-400 hover:bg-slate-800 text-xs font-bold transition flex items-center gap-2 shadow-xs';
+						'px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-400 hover:bg-slate-800 text-xs font-bold transition flex items-center gap-1.5 shadow-xs';
 					icon.className = 'fa-solid fa-volume-xmark text-slate-500';
 				}
 			}
@@ -550,7 +528,7 @@
 					const gain = ctx.createGain();
 					osc.type = type;
 					osc.frequency.value = freq;
-					gain.gain.setValueAtTime(0.12, ctx.currentTime);
+					gain.gain.setValueAtTime(0.1, ctx.currentTime);
 					gain.gain.exponentialRampToValueAtTime(
 						0.001,
 						ctx.currentTime + duration,
@@ -563,17 +541,17 @@
 			}
 
 			function playTypeSound() {
-				playTone(600, 'sine', 0.05);
+				playTone(600, 'sine', 0.04);
 			}
 			function playSolveSound() {
-				playTone(523.25, 'triangle', 0.1);
-				setTimeout(() => playTone(659.25, 'triangle', 0.1), 80);
-				setTimeout(() => playTone(783.99, 'triangle', 0.2), 160);
+				playTone(523.25, 'triangle', 0.08);
+				setTimeout(() => playTone(659.25, 'triangle', 0.08), 70);
+				setTimeout(() => playTone(783.99, 'triangle', 0.15), 140);
 			}
 			function playRoundCompleteSound() {
 				const notes = [523.25, 659.25, 783.99, 1046.5];
 				notes.forEach((n, i) =>
-					setTimeout(() => playTone(n, 'triangle', 0.25), i * 110),
+					setTimeout(() => playTone(n, 'triangle', 0.2), i * 100),
 				);
 			}
 
@@ -770,17 +748,17 @@
 						cell.dataset.c = c;
 						if (cellData) {
 							cell.classList.add(
-								'bg-slate-800/95',
+								'bg-slate-800/90',
 								'border',
 								'border-slate-700',
 								'text-amber-200',
-								'text-lg',
-								'sm:text-2xl',
+								'text-base',
+								'sm:text-xl',
 							);
 							if (cellData.num) {
 								const numSpan = document.createElement('span');
 								numSpan.className =
-									'absolute top-1 left-1.5 text-[10px] font-bold text-amber-400/90 pointer-events-none';
+									'absolute top-0.5 left-1 text-[9px] font-bold text-amber-400/90 pointer-events-none';
 								numSpan.innerText = cellData.num;
 								cell.appendChild(numSpan);
 							}
@@ -788,7 +766,10 @@
 							charSpan.className = 'cell-char';
 							charSpan.innerText = cellData.userInput;
 							cell.appendChild(charSpan);
-							cell.addEventListener('click', () => handleCellClick(r, c));
+							cell.addEventListener('click', (e) => {
+								e.stopPropagation();
+								handleCellClick(r, c);
+							});
 						} else {
 							cell.classList.add(
 								'bg-slate-950/40',
@@ -810,22 +791,18 @@
 				placedWords.forEach((w) => {
 					const card = document.createElement('div');
 					card.id = `clue-card-${w.id}`;
-					card.className = `p-2.5 rounded-xl border text-xs sm:text-sm cursor-pointer transition ${w.solved ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 line-through' : 'bg-slate-950/60 border-slate-800 text-slate-200 hover:border-amber-400/50'}`;
+					card.className = `p-2 sm:p-2.5 rounded-xl border text-xs sm:text-sm cursor-pointer transition ${w.solved ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 line-through' : 'bg-slate-950/60 border-slate-800 text-slate-200 hover:border-amber-400/50'}`;
 					card.innerHTML = `<span class="font-extrabold text-amber-400">${w.num}.</span> ${w.clue}`;
-					card.addEventListener('click', () => selectWord(w.id));
+					card.addEventListener('click', (e) => {
+						e.stopPropagation();
+						selectWord(w.id);
+					});
 					if (w.dir === 'across') acrossBox.appendChild(card);
 					else downBox.appendChild(card);
 				});
 			}
 
 			function setupInputProxy() {
-				document.addEventListener('click', (e) => {
-					if (
-						e.target.closest('#crossword-grid') ||
-						e.target.closest('#clues-container')
-					)
-						proxyInput.focus();
-				});
 				proxyInput.addEventListener('input', (e) => {
 					if (isTransitioningRound) return;
 					const char = e.target.value.slice(-1).toUpperCase();
@@ -857,6 +834,12 @@
 				});
 			}
 
+			function focusProxyInput() {
+				setTimeout(() => {
+					proxyInput.focus();
+				}, 10);
+			}
+
 			function handleCellClick(r, c) {
 				if (isTransitioningRound) return;
 				const cellData = gridMatrix[r][c];
@@ -869,7 +852,7 @@
 							: cellData.words[0],
 					);
 				}
-				proxyInput.focus();
+				focusProxyInput();
 			}
 
 			function selectWord(wordId) {
@@ -905,6 +888,7 @@
 				const activeCard = document.getElementById(`clue-card-${wordId}`);
 				if (activeCard)
 					activeCard.classList.add('border-amber-400', 'bg-amber-950/40');
+				focusProxyInput();
 			}
 
 			function useHint() {
